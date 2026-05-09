@@ -88,12 +88,9 @@ Paquetes usados por defecto en Debian/Kali:
 - `mawk`
 - `sed`
 - `grep`
+- `gomap`
 
-`gomap` es opcional, pero necesario para la función `scan`. Tras instalar las configuraciones puedes registrarlo con:
-
-```bash
-kdc-gomap
-```
+Durante `./install.sh --full`, el instalador registra el repositorio APT de `gomap` y lo instala automáticamente. El helper `kdc-gomap` queda disponible para reinstalar o reparar ese repositorio si lo necesitas más adelante.
 
 ## Instalación
 

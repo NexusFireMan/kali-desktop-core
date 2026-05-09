@@ -7,6 +7,10 @@ THEMES_DIR="$ROOT_DIR/themes"
 SCRIPTS_SRC="$ROOT_DIR/scripts"
 WALLPAPERS_SRC="$ROOT_DIR/wallpapers"
 BACKUP_DIR="${HOME}/.config/kali-desktop-core/backups/$(date +%Y%m%d-%H%M%S)"
+GOMAP_KEYRING_URL="https://nexusfireman.github.io/gomap/gomap-archive-keyring.gpg"
+GOMAP_KEYRING_PATH="/usr/share/keyrings/gomap-archive-keyring.gpg"
+GOMAP_REPO_LINE="deb [signed-by=/usr/share/keyrings/gomap-archive-keyring.gpg] https://nexusfireman.github.io/gomap stable main"
+GOMAP_REPO_FILE="/etc/apt/sources.list.d/gomap.list"
 THEME_NAME="default"
 INSTALL_CONFIGS=0
 INSTALL_THEME=0
@@ -96,14 +100,26 @@ install_packages() {
     log "Instalando dependencias con apt-get"
     sudo apt-get update
     sudo apt-get install -y "${PACKAGES[@]}"
+    install_gomap
   else
     warn "No se encontró apt-get. Instala manualmente: ${PACKAGES[*]}"
+    warn "gomap requiere registrar el repositorio APT: $GOMAP_REPO_LINE"
   fi
 
   if ! command -v starship >/dev/null 2>&1; then
     log "Instalando starship"
     curl -fsSL https://starship.rs/install.sh | sh -s -- -y
   fi
+}
+
+install_gomap() {
+  log "Registrando repositorio APT de gomap"
+  curl -fsSL "$GOMAP_KEYRING_URL" | sudo gpg --dearmor --yes -o "$GOMAP_KEYRING_PATH"
+  printf '%s\n' "$GOMAP_REPO_LINE" | sudo tee "$GOMAP_REPO_FILE" > /dev/null
+
+  log "Instalando gomap"
+  sudo apt-get update
+  sudo apt-get install -y gomap
 }
 
 copy_configs() {

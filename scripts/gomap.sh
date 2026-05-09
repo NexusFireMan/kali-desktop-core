@@ -21,7 +21,7 @@ require_command tee
 require_command apt
 
 echo "[*] Instalando keyring de gomap"
-curl -fsSL "$KEYRING_URL" | sudo gpg --dearmor -o "$KEYRING_PATH"
+curl -fsSL "$KEYRING_URL" | sudo gpg --dearmor --yes -o "$KEYRING_PATH"
 
 echo "[*] Registrando repositorio APT de gomap"
 printf '%s\n' "$REPO_LINE" | sudo tee "$REPO_FILE" > /dev/null
