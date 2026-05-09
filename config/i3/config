@@ -79,6 +79,7 @@ assign [class="kitty"] $ws1
 for_window [class=".*"] border pixel 2
 gaps inner 6
 gaps outer 4
+gaps top 28
 
 client.focused          #2f3440 #2f3440 #d0d0d0 #8fb7ff #2f3440
 client.focused_inactive #1a1d24 #1a1d24 #9ba3af #5c6370 #1a1d24
