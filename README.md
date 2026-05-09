@@ -129,6 +129,33 @@ Opciones útiles:
 ./install.sh --configs
 ```
 
+## Actualización
+
+Para actualizar una instalación existente:
+
+```bash
+git pull
+./install.sh --configs
+./install.sh --theme kali-zen
+```
+
+Si `git pull` se aborta por cambios locales, revisa primero qué ha cambiado:
+
+```bash
+git status --short
+git diff -- scripts/bar.sh
+```
+
+Si no quieres conservar esos cambios locales, restaura el archivo afectado y repite la actualización:
+
+```bash
+git restore scripts/bar.sh
+git pull
+./install.sh --configs
+```
+
+La barra escribe errores de arranque en `~/.cache/kdc-bar.log`.
+
 ## Uso básico
 
 ### TARGET persistente
