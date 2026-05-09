@@ -17,7 +17,7 @@ PACKAGES=(
   i3lock
   dmenu
   lemonbar
-  alacritty
+  kitty
   zsh
   feh
   iproute2
@@ -72,7 +72,7 @@ ensure_dirs() {
   mkdir -p \
     "${HOME}/.config" \
     "${HOME}/.config/i3" \
-    "${HOME}/.config/alacritty" \
+    "${HOME}/.config/kitty" \
     "${HOME}/.config/starship" \
     "${HOME}/.config/zsh" \
     "${HOME}/.local/bin" \
@@ -110,12 +110,13 @@ copy_configs() {
   log "Copiando configuraciones base"
 
   backup_path "${HOME}/.config/i3/config"
-  backup_path "${HOME}/.config/alacritty/alacritty.toml"
+  backup_path "${HOME}/.config/kitty/kitty.conf"
+  backup_path "${HOME}/.config/kitty/theme.conf"
   backup_path "${HOME}/.zshrc"
   backup_path "${HOME}/.config/starship.toml"
 
   install -m 0644 "$CONFIG_SRC/i3/config" "${HOME}/.config/i3/config"
-  install -m 0644 "$CONFIG_SRC/alacritty/alacritty.toml" "${HOME}/.config/alacritty/alacritty.toml"
+  install -m 0644 "$CONFIG_SRC/kitty/kitty.conf" "${HOME}/.config/kitty/kitty.conf"
   install -m 0644 "$CONFIG_SRC/zsh/.zshrc" "${HOME}/.zshrc"
   install -m 0644 "$CONFIG_SRC/starship/starship.toml" "${HOME}/.config/starship.toml"
 
@@ -155,8 +156,8 @@ apply_theme() {
 
   cp -a "$theme_dir" "${HOME}/.local/share/kali-desktop-core/themes/"
 
-  if [[ -f "$theme_dir/alacritty.theme.toml" ]]; then
-    install -m 0644 "$theme_dir/alacritty.theme.toml" "${HOME}/.config/alacritty/theme.toml"
+  if [[ -f "$theme_dir/kitty.theme.conf" ]]; then
+    install -m 0644 "$theme_dir/kitty.theme.conf" "${HOME}/.config/kitty/theme.conf"
   fi
 
   cp -a "$WALLPAPERS_SRC/." "${HOME}/.local/share/kali-desktop-core/wallpapers/" 2>/dev/null || true

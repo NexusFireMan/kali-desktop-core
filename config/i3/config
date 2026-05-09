@@ -1,5 +1,5 @@
 set $mod Mod4
-set $terminal alacritty
+set $terminal kitty
 set $launcher $HOME/.local/bin/kdc-dmenu
 set $scripts $HOME/.local/bin
 set $theme_file $HOME/.config/kali-desktop-core/theme.conf
@@ -74,7 +74,7 @@ bindsym $mod+Shift+3 move container to workspace $ws3
 bindsym $mod+Shift+4 move container to workspace $ws4
 bindsym $mod+Shift+5 move container to workspace $ws5
 
-assign [class="Alacritty"] $ws1
+assign [class="kitty"] $ws1
 
 for_window [class=".*"] border pixel 2
 gaps inner 6

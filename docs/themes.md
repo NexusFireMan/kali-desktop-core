@@ -9,7 +9,7 @@ El sistema de themes separa la identidad visual de la lógica del entorno. Así 
 Cada theme controla:
 
 - colores de `lemonbar`
-- colores de `alacritty`
+- colores de `kitty`
 - acentos visuales
 - wallpaper real aplicado por `feh`
 

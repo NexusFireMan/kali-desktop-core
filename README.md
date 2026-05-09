@@ -19,7 +19,7 @@ Principios del proyecto:
 - Window Manager: i3
 - Launcher: dmenu
 - Barra: lemonbar
-- Terminal: alacritty
+- Terminal: kitty
 - Shell: zsh
 - Prompt: starship
 - Compositor: ninguno
@@ -33,7 +33,7 @@ Principios del proyecto:
 ├── install.sh
 ├── uninstall.sh
 ├── config/
-│   ├── alacritty/
+│   ├── kitty/
 │   ├── dmenu/
 │   ├── i3/
 │   ├── starship/
@@ -74,7 +74,7 @@ Paquetes usados por defecto en Debian/Kali:
 - `i3lock`
 - `dmenu`
 - `lemonbar`
-- `alacritty`
+- `kitty`
 - `zsh`
 - `starship`
 - `feh`

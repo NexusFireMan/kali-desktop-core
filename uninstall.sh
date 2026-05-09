@@ -3,6 +3,8 @@ set -euo pipefail
 
 TARGETS=(
   "${HOME}/.config/i3/config"
+  "${HOME}/.config/kitty/kitty.conf"
+  "${HOME}/.config/kitty/theme.conf"
   "${HOME}/.config/alacritty/alacritty.toml"
   "${HOME}/.config/alacritty/theme.toml"
   "${HOME}/.config/dmenu/config"
