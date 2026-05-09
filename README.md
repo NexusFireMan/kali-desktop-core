@@ -97,7 +97,7 @@ kdc-gomap
 
 ## Instalación
 
-Clona el repositorio y ejecuta el instalador:
+Clona el repositorio y ejecuta una instalación completa la primera vez:
 
 ```bash
 git clone https://github.com/nexusfireman/kali-desktop-core.git
@@ -106,11 +106,18 @@ chmod +x install.sh uninstall.sh scripts/*.sh
 ./install.sh
 ```
 
-Modos disponibles:
+Sin argumentos, `./install.sh` equivale a `./install.sh --full`: instala dependencias, copia configuraciones, instala scripts y aplica el tema `default`.
+
+Para hacer la primera instalación con otro tema:
 
 ```bash
-./install.sh --full
-./install.sh --configs
+./install.sh --full --theme kali-zen
+./install.sh --full --theme katana
+```
+
+Después de una instalación base ya puedes cambiar solo el tema:
+
+```bash
 ./install.sh --theme kali-zen
 ./install.sh --theme katana
 ```
@@ -119,7 +126,7 @@ Opciones útiles:
 
 ```bash
 ./install.sh --help
-./install.sh --theme default --configs
+./install.sh --configs
 ```
 
 ## Uso básico
@@ -160,6 +167,7 @@ La función `extractPorts` parsea un resultado de `nmap`, copia los puertos al p
 - `Mod+Shift+r`: recargar i3
 - `Mod+Shift+q`: cerrar ventana
 - `Mod+Shift+e`: salir de la sesión
+- `Mod+Ctrl+l`: bloquear sesión
 - `Mod+h/j/k/l`: mover foco
 - `Mod+Shift+h/j/k/l`: mover ventanas
 - `Mod+1..9`: cambiar workspace

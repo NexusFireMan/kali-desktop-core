@@ -8,7 +8,7 @@ font pango:monospace 10
 floating_modifier $mod
 
 exec_always --no-startup-id sh -c 'wallpaper="$HOME/.config/kali-desktop-core/current-wallpaper"; if [ -s "$wallpaper" ] && [ -f "$(cat "$wallpaper")" ]; then feh --no-fehbg --bg-fill "$(cat "$wallpaper")"; else xsetroot -solid "#0d0f12"; fi'
-exec_always --no-startup-id "$scripts/kdc-bar"
+exec_always --no-startup-id $scripts/kdc-bar
 exec_always --no-startup-id xsetroot -cursor_name left_ptr
 
 focus_follows_mouse no
@@ -24,7 +24,7 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+q kill
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Salir de la sesión actual?' -B 'Cerrar sesión' 'i3-msg exit'"
-bindsym $mod+Shift+l exec i3lock -c 0d0f12
+bindsym $mod+Ctrl+l exec i3lock -c 0d0f12
 
 bindsym $mod+h focus left
 bindsym $mod+j focus down
@@ -75,10 +75,6 @@ bindsym $mod+Shift+4 move container to workspace $ws4
 bindsym $mod+Shift+5 move container to workspace $ws5
 
 assign [class="Alacritty"] $ws1
-
-bar {
-  mode hide
-}
 
 for_window [class=".*"] border pixel 2
 gaps inner 6

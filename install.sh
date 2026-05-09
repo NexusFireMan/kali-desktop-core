@@ -39,7 +39,7 @@ Uso: ./install.sh [opciones]
 Opciones:
   --full               Instala dependencias, configuraciones y theme
   --configs            Instala solo configuraciones y scripts
-  --theme <nombre>     Instala solo el theme indicado
+  --theme <nombre>     Cambia el theme tras una instalación base
   --help               Muestra esta ayuda
 
 Themes disponibles:
@@ -49,6 +49,7 @@ Themes disponibles:
 
 Ejemplos:
   ./install.sh --full
+  ./install.sh --full --theme kali-zen
   ./install.sh --configs
   ./install.sh --theme kali-zen
 EOF
@@ -138,6 +139,10 @@ apply_theme() {
   local wallpaper_file=""
 
   [[ -d "$theme_dir" ]] || die "El theme '$theme' no existe"
+
+  if [[ $INSTALL_FULL -eq 0 && $INSTALL_CONFIGS -eq 0 && ! -x "${HOME}/.local/bin/kdc-bar" ]]; then
+    die "Antes de usar --theme debes hacer una instalación base con './install.sh --full' o './install.sh --configs'."
+  fi
 
   log "Aplicando theme: $theme"
 

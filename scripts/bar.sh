@@ -9,7 +9,11 @@ if [[ ! -f "$UTILS_SCRIPT" ]]; then
   UTILS_SCRIPT="${SCRIPT_DIR}/utils.sh"
 fi
 
-# shellcheck disable=SC1091
+if [[ ! -f "$UTILS_SCRIPT" && -f "${HOME}/.local/bin/kdc-utils" ]]; then
+  UTILS_SCRIPT="${HOME}/.local/bin/kdc-utils"
+fi
+
+# shellcheck disable=SC1090
 source "$UTILS_SCRIPT"
 
 BAR_PID_FILE="${HOME}/.cache/kdc-bar.pid"
@@ -62,6 +66,18 @@ render_line() {
     "$(segment 'TIME' "$clock")"
 }
 
+bar_geometry() {
+  local width
+
+  width="$(xrandr 2>/dev/null | awk '/ connected/ {for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+x[0-9]+\+/) {sub(/x.*/, "", $i); print $i; exit}}' | head -n1)"
+
+  if [[ -n "${width:-}" ]]; then
+    printf '%sx24+0+0' "$width"
+  else
+    printf '1920x24+0+0'
+  fi
+}
+
 launch_bar() {
   load_theme_defaults
   while :; do
@@ -72,7 +88,7 @@ launch_bar() {
       sleep 1
       [[ $REFRESH_FLAG -eq 1 ]] && break
     done
-  done | lemonbar -p -B "$BAR_BG" -F "$BAR_FG" -f "$BAR_FONT" -g x24+0+0
+  done | lemonbar -p -d -B "$BAR_BG" -F "$BAR_FG" -f "$BAR_FONT" -g "$(bar_geometry)"
 }
 
 if [[ -f "$BAR_PID_FILE" ]]; then
