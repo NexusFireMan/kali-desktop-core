@@ -17,6 +17,7 @@ fi
 source "$UTILS_SCRIPT"
 
 BAR_PID_FILE="${HOME}/.cache/kdc-bar.pid"
+BAR_LOG_FILE="${HOME}/.cache/kdc-bar.log"
 REFRESH_FLAG=0
 
 on_refresh() {
@@ -26,7 +27,6 @@ on_refresh() {
 trap on_refresh USR1
 
 mkdir -p "$(dirname "$BAR_PID_FILE")"
-printf '%s\n' "$$" > "$BAR_PID_FILE"
 
 load_theme_defaults() {
   BAR_BG="#0d0f12"
@@ -93,10 +93,13 @@ launch_bar() {
 
 if [[ -f "$BAR_PID_FILE" ]]; then
   old_pid="$(cat "$BAR_PID_FILE" 2>/dev/null || true)"
-  if [[ -n "${old_pid:-}" ]] && kill -0 "$old_pid" 2>/dev/null; then
+  if [[ -n "${old_pid:-}" && "$old_pid" != "$$" ]] && kill -0 "$old_pid" 2>/dev/null; then
     kill "$old_pid" 2>/dev/null || true
     sleep 1
   fi
 fi
+
+printf '[%s] starting kdc-bar pid=%s\n' "$(date '+%F %T')" "$$" >> "$BAR_LOG_FILE"
+printf '%s\n' "$$" > "$BAR_PID_FILE"
 
 launch_bar

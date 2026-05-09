@@ -8,7 +8,7 @@ font pango:monospace 10
 floating_modifier $mod
 
 exec_always --no-startup-id sh -c 'wallpaper="$HOME/.config/kali-desktop-core/current-wallpaper"; if [ -s "$wallpaper" ] && [ -f "$(cat "$wallpaper")" ]; then feh --no-fehbg --bg-fill "$(cat "$wallpaper")"; else xsetroot -solid "#0d0f12"; fi'
-exec_always --no-startup-id $scripts/kdc-bar
+exec_always --no-startup-id sh -c '$HOME/.local/bin/kdc-bar >> "$HOME/.cache/kdc-bar.log" 2>&1'
 exec_always --no-startup-id xsetroot -cursor_name left_ptr
 
 focus_follows_mouse no
