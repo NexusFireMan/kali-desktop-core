@@ -1,0 +1,11 @@
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.log
+
+.idea/
+.vscode/
+
+docs/screenshots/*.png
+!docs/screenshots/.gitkeep

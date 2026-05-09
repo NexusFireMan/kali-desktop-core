@@ -1,0 +1,91 @@
+set $mod Mod4
+set $terminal alacritty
+set $launcher $HOME/.local/bin/kdc-dmenu
+set $scripts $HOME/.local/bin
+set $theme_file $HOME/.config/kali-desktop-core/theme.conf
+
+font pango:monospace 10
+floating_modifier $mod
+
+exec_always --no-startup-id sh -c 'wallpaper="$HOME/.config/kali-desktop-core/current-wallpaper"; if [ -s "$wallpaper" ] && [ -f "$(cat "$wallpaper")" ]; then feh --no-fehbg --bg-fill "$(cat "$wallpaper")"; else xsetroot -solid "#0d0f12"; fi'
+exec_always --no-startup-id "$scripts/kdc-bar"
+exec_always --no-startup-id xsetroot -cursor_name left_ptr
+
+focus_follows_mouse no
+mouse_warping none
+workspace_auto_back_and_forth yes
+new_window pixel 2
+new_float pixel 2
+hide_edge_borders smart
+
+bindsym $mod+Return exec $terminal
+bindsym $mod+d exec $launcher
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+q kill
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Salir de la sesión actual?' -B 'Cerrar sesión' 'i3-msg exit'"
+bindsym $mod+Shift+l exec i3lock -c 0d0f12
+
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+bindsym $mod+v split v
+bindsym $mod+b split h
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+space focus mode_toggle
+bindsym $mod+Shift+space floating toggle
+
+bindsym $mod+r mode resize
+mode resize {
+  bindsym h resize shrink width 10 px or 10 ppt
+  bindsym j resize grow height 10 px or 10 ppt
+  bindsym k resize shrink height 10 px or 10 ppt
+  bindsym l resize grow width 10 px or 10 ppt
+  bindsym Return mode default
+  bindsym Escape mode default
+  bindsym $mod+r mode default
+}
+
+set $ws1 "1:term"
+set $ws2 "2:web"
+set $ws3 "3:ops"
+set $ws4 "4:notes"
+set $ws5 "5:misc"
+
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+
+assign [class="Alacritty"] $ws1
+
+bar {
+  mode hide
+}
+
+for_window [class=".*"] border pixel 2
+gaps inner 6
+gaps outer 4
+
+client.focused          #2f3440 #2f3440 #d0d0d0 #8fb7ff #2f3440
+client.focused_inactive #1a1d24 #1a1d24 #9ba3af #5c6370 #1a1d24
+client.unfocused        #14171d #14171d #818791 #3d4450 #14171d
+client.urgent           #492b2f #492b2f #f2d7d7 #c75b65 #492b2f
+client.placeholder      #0d0f12 #0d0f12 #70757e #3d4450 #0d0f12

@@ -1,0 +1,51 @@
+add_newline = false
+format = "$directory$git_branch$git_status$cmd_duration$character"
+right_format = "$status"
+
+[directory]
+style = "bold #d0d0d0"
+truncation_length = 3
+truncate_to_repo = true
+
+[git_branch]
+format = " [$symbol$branch]($style)"
+symbol = "git:"
+style = "bold #8fb7ff"
+
+[git_status]
+format = "([$all_status$ahead_behind]($style))"
+style = "bold #c7a56a"
+
+[cmd_duration]
+min_time = 800
+format = " [$duration]($style)"
+style = "#8a929e"
+
+[status]
+disabled = false
+format = "[$symbol$status]($style)"
+symbol = "x "
+style = "bold #c75b65"
+
+[character]
+success_symbol = "[>](bold #8fb7ff)"
+error_symbol = "[>](bold #c75b65)"
+vimcmd_symbol = "[<](bold #8fb7ff)"
+
+[python]
+disabled = true
+
+[nodejs]
+disabled = true
+
+[package]
+disabled = true
+
+[aws]
+disabled = true
+
+[gcloud]
+disabled = true
+
+[docker_context]
+disabled = true
