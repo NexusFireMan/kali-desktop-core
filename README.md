@@ -169,7 +169,7 @@ La función `extractPorts` parsea un resultado de `nmap`, copia los puertos al p
 - `Mod+Shift+e`: salir de la sesión
 - `Mod+Ctrl+l`: bloquear sesión
 - `Mod+h/j/k/l`: mover foco
-- `Mod+Shift+h/j/k/l`: mover ventanas
+- `Mod+Shift+flechas`: mover ventanas
 - `Mod+1..9`: cambiar workspace
 
 ## Temas
