@@ -69,6 +69,23 @@ get_ipv4_by_iface() {
   ip -4 addr show "$iface" 2>/dev/null | awk '/inet / {print $2}' | cut -d/ -f1 | head -n1
 }
 
+vpn_ifaces() {
+  local -a ifaces
+  read -r -a ifaces <<< "${KDC_VPN_IFACES:-tun0 tun1 tun2 wg0}"
+  printf '%s\n' "${ifaces[@]}"
+}
+
+vpn_ifaces_text() {
+  local iface output=""
+
+  while IFS= read -r iface; do
+    [[ -n "$iface" ]] || continue
+    output="${output:+$output }$iface"
+  done < <(vpn_ifaces)
+
+  printf '%s\n' "$output"
+}
+
 get_primary_iface() {
   ip route get 1.1.1.1 2>/dev/null | awk '/dev/ {for (i=1; i<=NF; i++) if ($i == "dev") {print $(i+1); exit}}'
 }
@@ -190,16 +207,17 @@ check_network() {
     warn "No se pudo detectar interfaz local principal"
   fi
 
-  for vpn_iface in tun0 tun1 wg0; do
+  while IFS= read -r vpn_iface; do
+    [[ -n "$vpn_iface" ]] || continue
     vpn_ip="$(get_ipv4_by_iface "$vpn_iface" || true)"
     if [[ -n "${vpn_ip:-}" ]]; then
       ok "VPN detectada ($vpn_iface): $vpn_ip"
       found_vpn=1
     fi
-  done
+  done < <(vpn_ifaces)
 
   if [[ $found_vpn -eq 0 ]]; then
-    warn "No se detectó VPN en tun0/tun1/wg0"
+    warn "No se detectó VPN en: $(vpn_ifaces_text)"
   fi
 
   docker_ip="$(get_ipv4_by_iface docker0 || true)"

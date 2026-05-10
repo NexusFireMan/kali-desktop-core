@@ -42,6 +42,10 @@ showtarget() {
   fi
 }
 
+refreshbar() {
+  pkill -USR1 -f kdc-bar 2>/dev/null || true
+}
+
 extractPorts() {
   if [[ $# -lt 1 ]]; then
     echo "Uso: extractPorts <archivo_nmap>"
@@ -70,6 +74,7 @@ alias grep='grep --color=auto'
 alias ipbrief='ip -br a'
 alias ports='ss -tulpn'
 alias tshow='showtarget'
+alias rb='refreshbar'
 
 scan() {
   if [[ -z "${TARGET:-}" ]]; then
