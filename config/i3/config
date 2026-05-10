@@ -18,6 +18,7 @@ new_window pixel 2
 new_float pixel 2
 hide_edge_borders smart
 
+# Las terminales deben abrirse en el workspace actual.
 bindsym $mod+Return exec $terminal
 bindsym $mod+d exec $launcher
 bindsym $mod+Shift+r restart
@@ -73,8 +74,6 @@ bindsym $mod+Shift+2 move container to workspace $ws2
 bindsym $mod+Shift+3 move container to workspace $ws3
 bindsym $mod+Shift+4 move container to workspace $ws4
 bindsym $mod+Shift+5 move container to workspace $ws5
-
-assign [class="kitty"] $ws1
 
 for_window [class=".*"] border pixel 2
 gaps inner 6
