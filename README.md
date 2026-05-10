@@ -40,6 +40,7 @@ Principios del proyecto:
 │   └── zsh/
 ├── docs/
 │   ├── screenshots/
+│   ├── installation.md
 │   ├── flujo_trabajo.md
 │   ├── personalizacion.md
 │   └── themes.md
@@ -92,7 +93,7 @@ Paquetes usados por defecto en Debian/Kali:
 
 ## Instalación
 
-Clona el repositorio y ejecuta una instalación completa la primera vez:
+### Instalación rápida
 
 ```bash
 git clone https://github.com/nexusfireman/kali-desktop-core.git
@@ -101,31 +102,50 @@ chmod +x install.sh uninstall.sh scripts/*.sh
 ./install.sh
 ```
 
-Sin argumentos, `./install.sh` equivale a `./install.sh --full`: instala dependencias, copia configuraciones, instala scripts y aplica el tema `default`.
+Sin argumentos, `./install.sh` mantiene el comportamiento clásico: equivale a `./install.sh --full`, muestra un plan y aplica el tema `default`.
 
-Para hacer la primera instalación con otro tema:
-
-```bash
-./install.sh --full --theme kali-zen
-./install.sh --full --theme katana
-```
-
-Después de una instalación base ya puedes cambiar solo el tema:
+### Instalación interactiva
 
 ```bash
-./install.sh --theme kali-zen
-./install.sh --theme katana
-```
-
-Opciones útiles:
-
-```bash
-./install.sh --help
-./install.sh --configs
 ./install.sh --interactive
+```
+
+El modo interactivo usa preguntas simples en terminal para elegir perfil, tema y extras.
+
+### Dry-run
+
+```bash
 ./install.sh --dry-run --full --theme kali-zen
+```
+
+El dry-run muestra el plan de instalación sin ejecutar `apt-get`, crear backups, copiar archivos ni modificar `/etc/apt`.
+
+### Perfiles
+
+```bash
 ./install.sh --full --profile htb --theme kali-zen
 ```
+
+Perfiles disponibles: `minimal`, `vm`, `htb`, `bugbounty` y `custom`. Los perfiles `htb` y `bugbounty` activan `gomap` por defecto salvo que uses `--without-gomap`.
+
+### Extras gomap/starship
+
+```bash
+./install.sh --full --theme kali-zen --with-gomap --with-starship
+./install.sh --full --without-gomap --without-starship
+```
+
+`gomap` registra el repositorio APT del proyecto y se instala desde ahí. `starship` solo se instala con el instalador oficial si lo pides explícitamente o lo confirmas en modo interactivo.
+
+### Diagnóstico con kdc-doctor
+
+```bash
+./install.sh --configs --run-doctor
+kdc-doctor
+kdc-doctor --strict
+```
+
+El doctor comprueba comandos, configuración, scripts instalados, red, barra, tema y PATH. Consulta la guía completa en [installation.md](docs/installation.md).
 
 ## Actualización
 
@@ -219,6 +239,7 @@ Consulta [themes.md](docs/themes.md).
 Documentación adicional:
 
 - [Personalización](docs/personalizacion.md)
+- [Instalación](docs/installation.md)
 - [Temas](docs/themes.md)
 - [Flujo de trabajo](docs/flujo_trabajo.md)
 
