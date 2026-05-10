@@ -33,3 +33,7 @@ Tema más austero y profundo, con acentos cálidos apagados para mantener la int
 - Evitar contrastes agresivos.
 - Mantener fondos estables entre `#090b0d` y `#101319`.
 - Reservar el color de alerta para eventos importantes.
+
+## Seguridad
+
+Los themes son archivos de configuración en formato Bash que son leídos por los scripts del proyecto. Revisa themes de terceros antes de instalarlos.

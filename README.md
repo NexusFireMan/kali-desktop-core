@@ -28,6 +28,9 @@ Principios del proyecto:
 
 ```text
 .
+├── .github/
+│   └── workflows/
+│       └── shellcheck.yml
 ├── README.md
 ├── LICENSE
 ├── install.sh
@@ -50,6 +53,7 @@ Principios del proyecto:
 │   ├── network.sh
 │   ├── target.sh
 │   ├── dmenu.sh
+│   ├── doctor.sh
 │   └── utils.sh
 ├── themes/
 │   ├── default/
@@ -173,6 +177,13 @@ git pull
 ```
 
 La barra escribe errores de arranque en `~/.cache/kdc-bar.log`.
+
+## Validación
+
+```bash
+bash -n install.sh uninstall.sh scripts/*.sh
+shellcheck install.sh uninstall.sh scripts/*.sh
+```
 
 ## Uso básico
 
