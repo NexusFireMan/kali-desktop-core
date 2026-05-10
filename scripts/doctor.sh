@@ -50,6 +50,10 @@ check_command() {
   fi
 }
 
+docker_marker_exists() {
+  is_command docker || [[ -S /var/run/docker.sock || -e /etc/docker || -e /var/lib/docker ]]
+}
+
 check_file() {
   local path="$1"
   local required="${2:-required}"
@@ -165,6 +169,56 @@ check_commands() {
   fi
 
   check_command gomap optional
+}
+
+check_docker() {
+  local docker_required="optional"
+  local docker_marker=0
+  local current_user groups_output
+
+  if docker_marker_exists; then
+    docker_marker=1
+  fi
+
+  if [[ $STRICT -eq 1 && $docker_marker -eq 1 ]]; then
+    docker_required="required"
+  fi
+
+  check_command docker "$docker_required"
+
+  if is_command docker; then
+    if docker compose version >/dev/null 2>&1; then
+      ok "Docker Compose disponible: $(docker compose version 2>/dev/null | head -n1)"
+    elif [[ "$docker_required" == "required" ]]; then
+      fail "Docker Compose plugin no disponible"
+    else
+      warn "Docker Compose plugin no disponible"
+    fi
+  else
+    warn "No se puede comprobar Docker Compose sin el comando docker"
+  fi
+
+  if is_command systemctl; then
+    if systemctl is-active --quiet docker 2>/dev/null; then
+      ok "Servicio docker activo"
+    elif [[ "$docker_required" == "required" ]]; then
+      fail "Servicio docker no activo"
+    else
+      warn "Servicio docker no activo o no instalado"
+    fi
+  else
+    warn "systemctl no disponible; no se comprueba el servicio docker"
+  fi
+
+  current_user="${SUDO_USER:-${USER:-$(id -un)}}"
+  groups_output="$(id -nG "$current_user" 2>/dev/null || true)"
+  if [[ " $groups_output " == *" docker "* ]]; then
+    ok "Usuario $current_user pertenece al grupo docker"
+  elif [[ "$docker_required" == "required" ]]; then
+    fail "Usuario $current_user no pertenece al grupo docker"
+  else
+    warn "Usuario $current_user no pertenece al grupo docker"
+  fi
 }
 
 check_configs() {
@@ -343,6 +397,9 @@ main() {
 
   printf '\nRed\n'
   check_network
+
+  printf '\nDocker\n'
+  check_docker
 
   printf '\nBarra\n'
   check_bar

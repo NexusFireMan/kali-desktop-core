@@ -93,7 +93,7 @@ Paquetes usados por defecto en Debian/Kali:
 - `sed`
 - `grep`
 
-`gomap` y `starship` se pueden instalar como extras explícitos con `--with-gomap` y `--with-starship`. En perfiles `htb` y `bugbounty`, `gomap` se activa por defecto salvo que uses `--without-gomap`.
+`gomap`, `starship` y Docker se pueden instalar como extras explícitos con `--with-gomap`, `--with-starship` y `--with-docker`. En perfiles `htb` y `bugbounty`, `gomap` y Docker se activan por defecto salvo que uses `--without-gomap` o `--without-docker`.
 
 ## Instalación
 
@@ -132,14 +132,14 @@ El dry-run muestra el plan de instalación sin ejecutar `apt-get`, crear backups
 
 Perfiles disponibles: `minimal`, `vm`, `htb`, `bugbounty` y `custom`. Los perfiles `htb` y `bugbounty` activan `gomap` por defecto salvo que uses `--without-gomap`.
 
-### Extras gomap/starship
+### Extras gomap/starship/Docker
 
 ```bash
-./install.sh --full --theme kali-zen --with-gomap --with-starship
-./install.sh --full --without-gomap --without-starship
+./install.sh --full --theme kali-zen --with-gomap --with-starship --with-docker
+./install.sh --full --without-gomap --without-starship --without-docker
 ```
 
-`gomap` registra el repositorio APT del proyecto y se instala desde ahí. `starship` solo se instala con el instalador oficial si lo pides explícitamente o lo confirmas en modo interactivo.
+`gomap` registra el repositorio APT del proyecto y se instala desde ahí. `starship` solo se instala con el instalador oficial si lo pides explícitamente o lo confirmas en modo interactivo. Docker usa los paquetes del sistema `docker.io` y `docker-compose-plugin`; no se añaden repositorios externos de Docker.
 
 ### Diagnóstico con kdc-doctor
 

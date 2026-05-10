@@ -24,6 +24,7 @@ NO_CONFIRM=0
 RUN_DOCTOR=0
 WITH_GOMAP="auto"
 WITH_STARSHIP="auto"
+WITH_DOCKER="auto"
 NO_ARGS=0
 
 HAS_APT=0
@@ -57,6 +58,11 @@ CORE_PACKAGES=(
   mawk
   sed
   grep
+)
+
+DOCKER_PACKAGES=(
+  docker.io
+  docker-compose-plugin
 )
 
 print_header() {
@@ -142,6 +148,8 @@ Nuevas opciones:
   --without-gomap                No instala gomap
   --with-starship                Instala starship con el instalador oficial
   --without-starship             No instala starship externo
+  --with-docker                  Instala docker.io y docker-compose-plugin
+  --without-docker               No instala Docker
   --run-doctor                   Ejecuta kdc-doctor al final si existe
   --no-confirm                   No pide confirmación del plan
   --profile <perfil>             minimal, vm, htb, bugbounty o custom
@@ -150,6 +158,7 @@ Ejemplos:
   ./install.sh
   ./install.sh --full --theme kali-zen
   ./install.sh --full --theme kali-zen --with-gomap --with-starship
+  ./install.sh --full --profile htb --with-docker
   ./install.sh --configs --dry-run
   ./install.sh --theme katana --dry-run
   ./install.sh --interactive
@@ -256,7 +265,7 @@ select_theme_interactive() {
 }
 
 select_extras_interactive() {
-  local gomap_default starship_default
+  local gomap_default starship_default docker_default
 
   gomap_default="n"
   case "$PROFILE_NAME" in
@@ -272,6 +281,17 @@ select_extras_interactive() {
     WITH_GOMAP="yes"
   else
     WITH_GOMAP="no"
+  fi
+
+  docker_default="n"
+  case "$PROFILE_NAME" in
+    htb|bugbounty) docker_default="y" ;;
+  esac
+
+  if confirm "¿Instalar Docker desde los paquetes del sistema?" "$docker_default"; then
+    WITH_DOCKER="yes"
+  else
+    WITH_DOCKER="no"
   fi
 
   if confirm "¿Instalar starship con el instalador oficial si no existe?" "$starship_default"; then
@@ -305,6 +325,13 @@ resolve_defaults() {
 
   if [[ "$WITH_STARSHIP" == "auto" ]]; then
     WITH_STARSHIP="no"
+  fi
+
+  if [[ "$WITH_DOCKER" == "auto" ]]; then
+    case "$PROFILE_NAME" in
+      htb|bugbounty) WITH_DOCKER="yes" ;;
+      *) WITH_DOCKER="no" ;;
+    esac
   fi
 }
 
@@ -373,6 +400,15 @@ build_plan() {
   if [[ "$WITH_STARSHIP" == "yes" ]]; then
     SUDO_ACTIONS+=("run official starship installer")
   fi
+
+  if [[ "$WITH_DOCKER" == "yes" ]]; then
+    if [[ $HAS_APT -eq 1 ]]; then
+      SUDO_ACTIONS+=("apt-get update")
+      SUDO_ACTIONS+=("apt-get install docker packages")
+    fi
+    SUDO_ACTIONS+=("systemctl enable --now docker if available")
+    SUDO_ACTIONS+=("usermod -aG docker current user")
+  fi
 }
 
 print_list() {
@@ -428,6 +464,7 @@ print_plan() {
   printf 'Extras:\n'
   printf '  - gomap: %s\n' "$WITH_GOMAP"
   printf '  - starship externo: %s\n' "$WITH_STARSHIP"
+  printf '  - docker: %s\n' "$WITH_DOCKER"
   printf '  - doctor: %s\n' "$([[ $RUN_DOCTOR -eq 1 ]] && printf 'sí' || printf 'no')"
   printf '\n'
 
@@ -522,6 +559,36 @@ install_starship_external() {
 
   log "Instalando starship con el instalador oficial"
   dry_run_or_shell "instalar starship" "curl -fsSL https://starship.rs/install.sh | sh -s -- -y"
+}
+
+install_docker() {
+  local target_user
+
+  if [[ "$WITH_DOCKER" != "yes" ]]; then
+    return
+  fi
+
+  if [[ $HAS_APT -eq 0 ]]; then
+    warn "No se encontró apt-get. No se puede instalar Docker automáticamente."
+    return
+  fi
+
+  target_user="${SUDO_USER:-${USER:-$(id -un)}}"
+
+  log "Instalando Docker desde paquetes del sistema"
+  dry_run_or_exec sudo apt-get update
+  dry_run_or_exec sudo apt-get install -y "${DOCKER_PACKAGES[@]}"
+
+  if is_command systemctl; then
+    log "Habilitando servicio docker"
+    dry_run_or_exec sudo systemctl enable --now docker
+  else
+    warn "systemctl no está disponible. No se habilitó el servicio docker automáticamente."
+  fi
+
+  log "Añadiendo usuario $target_user al grupo docker"
+  dry_run_or_exec sudo usermod -aG docker "$target_user"
+  warn "Cierra sesión y vuelve a entrar para usar Docker sin sudo."
 }
 
 copy_configs() {
@@ -661,6 +728,14 @@ parse_args() {
         WITH_STARSHIP="no"
         shift
         ;;
+      --with-docker)
+        WITH_DOCKER="yes"
+        shift
+        ;;
+      --without-docker)
+        WITH_DOCKER="no"
+        shift
+        ;;
       --run-doctor)
         RUN_DOCTOR=1
         shift
@@ -692,6 +767,7 @@ execute_plan() {
     install_packages
     install_gomap
     install_starship_external
+    install_docker
     copy_configs
     apply_theme
   else
@@ -711,7 +787,11 @@ execute_plan() {
       install_starship_external
     fi
 
-    if [[ $INSTALL_CONFIGS -eq 0 && $INSTALL_THEME -eq 0 && "$WITH_GOMAP" != "yes" && "$WITH_STARSHIP" != "yes" && $RUN_DOCTOR -eq 0 ]]; then
+    if [[ "$WITH_DOCKER" == "yes" ]]; then
+      install_docker
+    fi
+
+    if [[ $INSTALL_CONFIGS -eq 0 && $INSTALL_THEME -eq 0 && "$WITH_GOMAP" != "yes" && "$WITH_STARSHIP" != "yes" && "$WITH_DOCKER" != "yes" && $RUN_DOCTOR -eq 0 ]]; then
       die "No se seleccionó ninguna acción. Usa --help para ver opciones."
     fi
   fi

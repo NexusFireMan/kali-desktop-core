@@ -46,6 +46,7 @@ Es útil para revisar el plan antes de tocar una VM o una instalación de trabaj
 
 ```bash
 ./install.sh --full --profile htb --theme kali-zen --with-gomap
+./install.sh --full --profile htb --theme kali-zen --with-docker
 ```
 
 Los perfiles disponibles son:
@@ -56,7 +57,7 @@ Los perfiles disponibles son:
 - `bugbounty`: orientado a sesiones largas de reconocimiento y pruebas web.
 - `custom`: punto de partida manual.
 
-En perfiles `htb` y `bugbounty`, `gomap` se activa por defecto salvo que uses `--without-gomap`.
+En perfiles `htb` y `bugbounty`, `gomap` y Docker se activan por defecto salvo que uses `--without-gomap` o `--without-docker`.
 
 ## Reinstalar configuraciones
 
@@ -120,6 +121,22 @@ https://nexusfireman.github.io/gomap
 ```
 
 Después ejecuta `apt-get update` e instala el paquete `gomap`. El helper `kdc-gomap` queda disponible para reparar o reinstalar ese repositorio manualmente.
+
+## Docker
+
+```bash
+./install.sh --full --profile htb --with-docker
+./install.sh --full --without-docker
+```
+
+Docker es opcional. Cuando se activa, el instalador usa los paquetes del sistema:
+
+- `docker.io`
+- `docker-compose-plugin`
+
+No se añaden repositorios externos de Docker en esta fase. Si `systemctl` está disponible, el instalador habilita el servicio con `sudo systemctl enable --now docker` y añade el usuario actual al grupo `docker`.
+
+Después de instalar Docker, cierra sesión y vuelve a entrar para usar Docker sin `sudo`.
 
 ## Recomendaciones para Kali en VM
 
