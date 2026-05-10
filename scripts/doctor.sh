@@ -3,6 +3,21 @@ set -euo pipefail
 
 FAIL_COUNT=0
 WARN_COUNT=0
+STRICT=0
+
+usage() {
+  cat <<'EOF'
+Uso: kdc-doctor [opciones]
+
+Opciones:
+  --strict   Trata starship y la barra en ejecución como requisitos estrictos
+  --help     Muestra esta ayuda
+
+Ejemplos:
+  kdc-doctor
+  kdc-doctor --strict
+EOF
+}
 
 ok() {
   printf '[OK] %s\n' "$1"
@@ -113,7 +128,6 @@ check_commands() {
     dmenu
     lemonbar
     zsh
-    starship
     feh
     xrandr
     ip
@@ -126,6 +140,12 @@ check_commands() {
   for cmd in "${required_commands[@]}"; do
     check_command "$cmd"
   done
+
+  if [[ $STRICT -eq 1 ]]; then
+    check_command starship
+  else
+    check_command starship optional
+  fi
 
   check_command gomap optional
 }
@@ -145,8 +165,9 @@ check_scripts() {
   check_file "${HOME}/.local/bin/kdc-bar"
   check_file "${HOME}/.local/bin/kdc-network"
   check_file "${HOME}/.local/bin/kdc-target"
-  check_file "${HOME}/.local/bin/kdc-gomap"
   check_file "${HOME}/.local/bin/kdc-utils"
+  check_file "${HOME}/.local/bin/kdc-doctor"
+  check_file "${HOME}/.local/bin/kdc-gomap" optional
 }
 
 check_network() {
@@ -194,14 +215,18 @@ check_bar() {
 
   if pgrep -f kdc-bar >/dev/null 2>&1; then
     ok "Proceso kdc-bar activo"
-  else
+  elif [[ $STRICT -eq 1 ]]; then
     fail "No hay proceso kdc-bar activo"
+  else
+    warn "No hay proceso kdc-bar activo"
   fi
 
   if pgrep -x lemonbar >/dev/null 2>&1 || pgrep -f lemonbar >/dev/null 2>&1; then
     ok "Proceso lemonbar activo"
-  else
+  elif [[ $STRICT -eq 1 ]]; then
     fail "No hay proceso lemonbar activo"
+  else
+    warn "No hay proceso lemonbar activo"
   fi
 
   if [[ -e "$log_file" ]]; then
@@ -258,8 +283,31 @@ check_theme() {
 }
 
 main() {
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --strict)
+        STRICT=1
+        shift
+        ;;
+      --help|-h)
+        usage
+        exit 0
+        ;;
+      *)
+        printf '[FAIL] Opción desconocida: %s\n' "$1" >&2
+        usage >&2
+        exit 1
+        ;;
+    esac
+  done
+
   printf 'Kali Desktop Core doctor\n'
   printf '========================\n'
+  if [[ $STRICT -eq 1 ]]; then
+    printf 'Modo: strict\n'
+  else
+    printf 'Modo: normal\n'
+  fi
 
   printf '\nSistema\n'
   check_os
