@@ -22,7 +22,7 @@ settarget() {
   mkdir -p "$(dirname "$TARGET_FILE")"
   printf '%s\n' "$1" > "$TARGET_FILE"
   export TARGET="$1"
-  pkill -USR1 -f kdc-bar 2>/dev/null || true
+  kdc-refresh 2>/dev/null || true
   echo "TARGET establecido: $TARGET"
 }
 
@@ -30,7 +30,7 @@ cleartarget() {
   mkdir -p "$(dirname "$TARGET_FILE")"
   : > "$TARGET_FILE"
   unset TARGET
-  pkill -USR1 -f kdc-bar 2>/dev/null || true
+  kdc-refresh 2>/dev/null || true
   echo "TARGET limpiado"
 }
 
@@ -43,7 +43,7 @@ showtarget() {
 }
 
 refreshbar() {
-  pkill -USR1 -f kdc-bar 2>/dev/null || true
+  kdc-refresh 2>/dev/null || true
 }
 
 extractPorts() {

@@ -238,6 +238,7 @@ check_scripts() {
   check_file "${HOME}/.local/bin/kdc-target"
   check_file "${HOME}/.local/bin/kdc-utils"
   check_file "${HOME}/.local/bin/kdc-doctor"
+  check_file "${HOME}/.local/bin/kdc-refresh"
   check_file "${HOME}/.local/bin/kdc-gomap" optional
 }
 
@@ -284,6 +285,8 @@ check_network() {
 
 check_bar() {
   local log_file="${HOME}/.cache/kdc-bar.log"
+  local pid_file="${HOME}/.cache/kdc-bar.pid"
+  local pid
 
   if pgrep -f kdc-bar >/dev/null 2>&1; then
     ok "Proceso kdc-bar activo"
@@ -291,6 +294,23 @@ check_bar() {
     fail "No hay proceso kdc-bar activo"
   else
     warn "No hay proceso kdc-bar activo"
+  fi
+
+  if [[ -r "$pid_file" ]]; then
+    pid=""
+    IFS= read -r pid < "$pid_file" || true
+    if [[ -n "${pid:-}" ]]; then
+      ok "PID de barra registrado: $pid"
+      if [[ "$pid" =~ ^[0-9]+$ ]] && kill -0 "$pid" 2>/dev/null; then
+        ok "PID de barra vivo: $pid"
+      else
+        warn "El PID de barra registrado no corresponde a un proceso vivo: $pid"
+      fi
+    else
+      warn "El fichero de PID de barra está vacío: $pid_file"
+    fi
+  else
+    warn "Fichero de PID de barra no existe todavía: $pid_file"
   fi
 
   if pgrep -x lemonbar >/dev/null 2>&1 || pgrep -f lemonbar >/dev/null 2>&1; then

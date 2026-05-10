@@ -18,6 +18,7 @@ source "$UTILS_SCRIPT"
 
 BAR_PID_FILE="${HOME}/.cache/kdc-bar.pid"
 BAR_LOG_FILE="${HOME}/.cache/kdc-bar.log"
+BAR_REFRESH_SECONDS="${BAR_REFRESH_SECONDS:-3}"
 REFRESH_FLAG=0
 
 on_refresh() {
@@ -79,14 +80,22 @@ bar_geometry() {
 }
 
 launch_bar() {
+  local elapsed
+
   load_theme_defaults
   while :; do
     render_line
     REFRESH_FLAG=0
 
-    for _ in {1..10}; do
+    if [[ ! "$BAR_REFRESH_SECONDS" =~ ^[0-9]+$ || "$BAR_REFRESH_SECONDS" -lt 1 ]]; then
+      BAR_REFRESH_SECONDS=3
+    fi
+
+    elapsed=0
+    while [[ $elapsed -lt $BAR_REFRESH_SECONDS ]]; do
       sleep 1
       [[ $REFRESH_FLAG -eq 1 ]] && break
+      elapsed=$((elapsed + 1))
     done
   done | lemonbar -p -d -B "$BAR_BG" -F "$BAR_FG" -f "$BAR_FONT" -g "$(bar_geometry)"
 }

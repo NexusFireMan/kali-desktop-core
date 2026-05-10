@@ -54,6 +54,7 @@ Principios del proyecto:
 │   ├── target.sh
 │   ├── dmenu.sh
 │   ├── doctor.sh
+│   ├── refresh.sh
 │   └── utils.sh
 ├── themes/
 │   ├── default/
@@ -200,6 +201,14 @@ El valor se guarda en `~/.config/target` y se integra con:
 - la barra
 - alias y funciones de `zsh`
 - scripts de reconocimiento
+
+`settarget` y `cleartarget` refrescan la barra usando `kdc-refresh`. Si conectas una VPN manualmente, por ejemplo con `sudo openvpn`, puedes forzar el refresco inmediato con:
+
+```bash
+rb
+```
+
+`rb` es un alias de `refreshbar`, que llama a `kdc-refresh`.
 
 ### Flujo de pentesting
 

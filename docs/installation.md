@@ -96,6 +96,25 @@ kdc-doctor --strict
 
 El modo normal permite warnings esperables, como no tener VPN activa. El modo `--strict` trata la barra y `starship` como requisitos más duros.
 
+## Refresco de barra
+
+El instalador deja disponible:
+
+```bash
+~/.local/bin/kdc-refresh
+```
+
+Este helper lee `~/.cache/kdc-bar.pid` y envía `USR1` a la barra para refrescar LAN, VPN, Docker y TARGET. Las funciones `settarget` y `cleartarget` lo usan automáticamente.
+
+En zsh también queda disponible:
+
+```bash
+refreshbar
+rb
+```
+
+Si conectas una VPN manualmente, por ejemplo con `sudo openvpn`, ejecuta `rb` para forzar el refresco inmediato de la barra.
+
 ## Starship
 
 ```bash
