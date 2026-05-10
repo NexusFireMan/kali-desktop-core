@@ -76,7 +76,6 @@ Paquetes usados por defecto en Debian/Kali:
 - `lemonbar`
 - `kitty`
 - `zsh`
-- `starship`
 - `feh`
 - `iproute2`
 - `procps`
@@ -88,9 +87,8 @@ Paquetes usados por defecto en Debian/Kali:
 - `mawk`
 - `sed`
 - `grep`
-- `gomap`
 
-Durante `./install.sh --full`, el instalador registra el repositorio APT de `gomap` y lo instala automáticamente. El helper `kdc-gomap` queda disponible para reinstalar o reparar ese repositorio si lo necesitas más adelante.
+`gomap` y `starship` se pueden instalar como extras explícitos con `--with-gomap` y `--with-starship`. En perfiles `htb` y `bugbounty`, `gomap` se activa por defecto salvo que uses `--without-gomap`.
 
 ## Instalación
 
@@ -124,6 +122,9 @@ Opciones útiles:
 ```bash
 ./install.sh --help
 ./install.sh --configs
+./install.sh --interactive
+./install.sh --dry-run --full --theme kali-zen
+./install.sh --full --profile htb --theme kali-zen
 ```
 
 ## Actualización
