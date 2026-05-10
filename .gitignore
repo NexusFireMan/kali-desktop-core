@@ -8,4 +8,10 @@ Thumbs.db
 .vscode/
 
 docs/screenshots/*.png
-!docs/screenshots/.gitkeep
+!docs/screenshots/00-desktop-zen.png
+!docs/screenshots/01-dry-run-plan.png
+!docs/screenshots/02-install-complete-01.png
+!docs/screenshots/02-install-complete-02.png
+!docs/screenshots/03-kdc-doctor.png
+!docs/screenshots/04-desktop-overview.png
+!docs/screenshots/04-target-overview.png

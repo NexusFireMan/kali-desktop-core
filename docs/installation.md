@@ -24,6 +24,8 @@ Para indicar el modo de forma explícita:
 ./install.sh --full
 ```
 
+![Plan de instalación completo](screenshots/02-install-complete-01.png)
+
 ## Instalación interactiva
 
 ```bash
@@ -41,6 +43,8 @@ El modo interactivo usa preguntas simples con `read`. Permite elegir perfil, tem
 El dry-run muestra qué haría el instalador sin aplicar cambios. No ejecuta `apt-get`, no copia archivos, no crea backups, no modifica `/etc/apt` y no ejecuta instaladores externos.
 
 Es útil para revisar el plan antes de tocar una VM o una instalación de trabajo.
+
+![Dry-run del plan de instalación](screenshots/01-dry-run-plan.png)
 
 ## Perfil HTB con gomap
 
@@ -95,6 +99,10 @@ kdc-doctor --strict
 ```
 
 El modo normal permite warnings esperables, como no tener VPN activa. El modo `--strict` trata la barra y `starship` como requisitos más duros.
+
+![Diagnóstico posterior a la instalación](screenshots/02-install-complete-02.png)
+
+![kdc-doctor dentro de i3](screenshots/03-kdc-doctor.png)
 
 ## Refresco de barra
 

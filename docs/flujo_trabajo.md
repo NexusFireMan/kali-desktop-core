@@ -18,6 +18,16 @@ extractPorts scans/initial.nmap
 scan
 ```
 
+## Capturas del workflow
+
+### TARGET y gomap
+
+![Workflow con TARGET y gomap](screenshots/04-target-overview.png)
+
+### Escritorio Kali Zen
+
+![Escritorio Kali Zen](screenshots/00-desktop-zen.png)
+
 ## Distribución recomendada de workspaces
 
 - `1:term`: shells, tmux, sesiones SSH

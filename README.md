@@ -2,6 +2,12 @@
 
 Entorno de escritorio minimalista para Kali Linux orientado a pentesting real, máquinas virtuales y sesiones largas de trabajo sin fatiga visual.
 
+<p align="center">
+  <img src="docs/screenshots/04-desktop-overview.png" alt="Kali Desktop Core - desktop overview">
+</p>
+
+Entorno i3 minimalista con barra superior para LAN, VPN, Docker, TARGET y flujo de escaneo integrado con gomap.
+
 ## Filosofía
 
 Kali Desktop Core no busca verse bien en una captura. Busca sentirse sólido después de ocho horas de reconocimiento, pivoteo, debugging y terminales abiertas.
@@ -265,13 +271,17 @@ Documentación adicional:
 
 ## Capturas
 
-Rutas sugeridas para capturas:
+### Desktop overview
 
-- `docs/screenshots/desktop-overview.png`
-- `docs/screenshots/workspaces-terminal.png`
-- `docs/screenshots/target-workflow.png`
+![Desktop overview](docs/screenshots/04-desktop-overview.png)
 
-Puedes reemplazarlas por capturas reales del tema activo.
+### Pentesting workflow
+
+![Pentesting workflow](docs/screenshots/04-target-overview.png)
+
+### Installation dry-run
+
+![Installation dry-run](docs/screenshots/01-dry-run-plan.png)
 
 ## Contribuir
 
