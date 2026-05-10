@@ -139,7 +139,7 @@ Perfiles disponibles: `minimal`, `vm`, `htb`, `bugbounty` y `custom`. Los perfil
 ./install.sh --full --without-gomap --without-starship --without-docker
 ```
 
-`gomap` registra el repositorio APT del proyecto y se instala desde ahí. `starship` solo se instala con el instalador oficial si lo pides explícitamente o lo confirmas en modo interactivo. Docker usa los paquetes del sistema `docker.io` y `docker-compose-plugin`; no se añaden repositorios externos de Docker.
+`gomap` registra el repositorio APT del proyecto y se instala desde ahí. `starship` solo se instala con el instalador oficial si lo pides explícitamente o lo confirmas en modo interactivo. Docker usa los paquetes del sistema `docker.io` y `docker-compose`; no se añaden repositorios externos de Docker.
 
 ### Diagnóstico con kdc-doctor
 

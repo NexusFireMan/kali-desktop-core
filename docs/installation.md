@@ -132,7 +132,7 @@ Después ejecuta `apt-get update` e instala el paquete `gomap`. El helper `kdc-g
 Docker es opcional. Cuando se activa, el instalador usa los paquetes del sistema:
 
 - `docker.io`
-- `docker-compose-plugin`
+- `docker-compose`
 
 No se añaden repositorios externos de Docker en esta fase. Si `systemctl` está disponible, el instalador habilita el servicio con `sudo systemctl enable --now docker` y añade el usuario actual al grupo `docker`.
 

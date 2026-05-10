@@ -62,7 +62,7 @@ CORE_PACKAGES=(
 
 DOCKER_PACKAGES=(
   docker.io
-  docker-compose-plugin
+  docker-compose
 )
 
 print_header() {
@@ -148,7 +148,7 @@ Nuevas opciones:
   --without-gomap                No instala gomap
   --with-starship                Instala starship con el instalador oficial
   --without-starship             No instala starship externo
-  --with-docker                  Instala docker.io y docker-compose-plugin
+  --with-docker                  Instala docker.io y docker-compose
   --without-docker               No instala Docker
   --run-doctor                   Ejecuta kdc-doctor al final si existe
   --no-confirm                   No pide confirmación del plan
