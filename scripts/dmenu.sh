@@ -15,10 +15,12 @@ if [[ -f "$DMENU_CONFIG" ]]; then
   source "$DMENU_CONFIG"
 fi
 
+read -r -a DMENU_STYLE_ARGS <<< "$DMENU_STYLE"
+
 exec dmenu_run \
   -fn "$DMENU_FONT" \
   -nb "$DMENU_NORMAL_BG" \
   -nf "$DMENU_NORMAL_FG" \
   -sb "$DMENU_SELECTED_BG" \
   -sf "$DMENU_SELECTED_FG" \
-  ${DMENU_STYLE}
+  "${DMENU_STYLE_ARGS[@]}"
