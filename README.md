@@ -235,7 +235,7 @@ La función `extractPorts` parsea un resultado de `nmap`, copia los puertos al p
 
 ## Keybindings principales de i3
 
-El icono `⏻` de la barra abre `kdc-power-menu` con opciones para bloquear sesión, cerrar sesión, suspender, reiniciar y apagar.
+El botón `PWR` de la barra abre `kdc-power-menu` con opciones para bloquear sesión, cerrar sesión, suspender, reiniciar y apagar.
 
 - `Mod+Return`: abrir terminal
 - `Mod+d`: abrir dmenu

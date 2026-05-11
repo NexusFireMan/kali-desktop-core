@@ -42,10 +42,10 @@ load_theme_defaults() {
 
   BAR_WS_ACTIVE="${BAR_WS_ACTIVE:-$BAR_ALERT}"
   BAR_WS_INACTIVE="${BAR_WS_INACTIVE:-$BAR_MUTED}"
-  BAR_WS_SYMBOL="${BAR_WS_SYMBOL:-●}"
+  BAR_WS_SYMBOL="${BAR_WS_SYMBOL:-•}"
   BAR_WS_SEPARATOR="${BAR_WS_SEPARATOR:- }"
   BAR_WS_COUNT="${BAR_WS_COUNT:-5}"
-  BAR_POWER_ICON="${BAR_POWER_ICON:-⏻}"
+  BAR_POWER_ICON="${BAR_POWER_ICON:-PWR}"
   BAR_POWER_COLOR="${BAR_POWER_COLOR:-$BAR_ALERT}"
 }
 
@@ -62,16 +62,61 @@ bar_debug_log() {
   printf '[%s] workspace_dots: %s\n' "$(date '+%F %T')" "$1" >> "$BAR_LOG_FILE"
 }
 
-workspace_dots_fallback() {
+focused_workspace_num() {
+  local output objects line active
+
+  if ! is_command i3-msg; then
+    bar_debug_log "i3-msg no está disponible; usando workspace activo 1"
+    printf '1'
+    return 0
+  fi
+
+  output="$(i3-msg -t get_workspaces 2>/dev/null || true)"
+  if [[ -z "${output:-}" ]]; then
+    bar_debug_log "i3-msg no devolvió workspaces; usando workspace activo 1"
+    printf '1'
+    return 0
+  fi
+
+  objects="$(
+    printf '%s\n' "$output" \
+      | sed 's#}[[:space:]]*,[[:space:]]*{#}\n{#g' \
+      | sed 's/^\[//' \
+      | sed 's/\]$//'
+  )"
+
+  while IFS= read -r line; do
+    [[ -n "$line" ]] || continue
+    if printf '%s\n' "$line" | grep -Eq '"focused"[[:space:]]*:[[:space:]]*true'; then
+      active="$(printf '%s\n' "$line" | sed -n 's/.*"num"[[:space:]]*:[[:space:]]*\([0-9][0-9]*\).*/\1/p')"
+      if [[ -n "${active:-}" ]]; then
+        printf '%s' "$active"
+        return 0
+      fi
+    fi
+  done <<< "$objects"
+
+  bar_debug_log "no se pudo detectar workspace focused; usando workspace activo 1"
+  printf '1'
+}
+
+workspace_dots() {
   local count="${BAR_WS_COUNT:-5}"
-  local i color
+  local active i color
 
   if [[ ! "$count" =~ ^[0-9]+$ || "$count" -lt 1 ]]; then
     count=5
   fi
 
+  active="$(focused_workspace_num)"
+  if [[ ! "$active" =~ ^[0-9]+$ || "$active" -lt 1 ]]; then
+    active=1
+  fi
+
+  bar_debug_log "workspace activo detectado=$active, BAR_WS_COUNT=$count"
+
   for ((i = 1; i <= count; i++)); do
-    if [[ $i -eq 1 ]]; then
+    if [[ $i -eq active ]]; then
       color="$BAR_WS_ACTIVE"
     else
       color="$BAR_WS_INACTIVE"
@@ -85,71 +130,12 @@ workspace_dots_fallback() {
   done
 }
 
-workspace_dots() {
-  local output objects line focused color first=1 parsed=0 focused_found=0 result="" dot
-
-  if ! is_command i3-msg; then
-    bar_debug_log "i3-msg no está disponible; usando fallback"
-    workspace_dots_fallback
-    return 0
-  fi
-
-  output="$(i3-msg -t get_workspaces 2>/dev/null || true)"
-  if [[ -z "${output:-}" ]]; then
-    bar_debug_log "i3-msg no devolvió workspaces; usando fallback"
-    workspace_dots_fallback
-    return 0
-  fi
-
-  objects="$(
-    printf '%s\n' "$output" \
-      | sed 's#}[[:space:]]*,[[:space:]]*{#}\n{#g' \
-      | sed 's/^\[//' \
-      | sed 's/\]$//'
-  )"
-
-  while IFS= read -r line; do
-    [[ -n "$line" ]] || continue
-    [[ "$line" == *'"name"'* || "$line" == *'"num"'* ]] || continue
-    parsed=1
-
-    focused=0
-    if printf '%s\n' "$line" | grep -Eq '"focused"[[:space:]]*:[[:space:]]*true'; then
-      focused=1
-      focused_found=1
-    fi
-
-    if [[ $focused -eq 1 ]]; then
-      color="$BAR_WS_ACTIVE"
-    else
-      color="$BAR_WS_INACTIVE"
-    fi
-
-    if [[ $first -eq 0 ]]; then
-      result+="$BAR_WS_SEPARATOR"
-    fi
-
-    printf -v dot '%%{F%s}%s%%{F-}' "$color" "$BAR_WS_SYMBOL"
-    result+="$dot"
-    first=0
-  done <<< "$objects"
-
-  if [[ $parsed -eq 0 || $focused_found -eq 0 ]]; then
-    if [[ $parsed -eq 0 ]]; then
-      bar_debug_log "no se pudieron parsear workspaces; usando fallback"
-    else
-      bar_debug_log "no se pudo detectar workspace focused; usando fallback"
-    fi
-    workspace_dots_fallback
-  else
-    printf '%s' "$result"
-  fi
-}
-
 power_button() {
   if [[ -x "$POWER_MENU" ]]; then
+    bar_debug_log "power menu disponible: $POWER_MENU"
     printf '%%{A1:%s:}%%{F%s}%s%%{F-}%%{A}' "$POWER_MENU" "$BAR_POWER_COLOR" "$BAR_POWER_ICON"
   else
+    bar_debug_log "power menu no instalado; mostrando fallback no clicable"
     printf '%%{F%s}%s%%{F-}' "$BAR_POWER_COLOR" "$BAR_POWER_ICON"
   fi
 }
@@ -164,7 +150,7 @@ render_line() {
   target="$(read_target)"
   clock="$(date '+%H:%M')"
   workspaces="$(workspace_dots)"
-  power="$(power_button)"
+  power="   $(power_button)"
 
   printf "%%{l}%s%s%s%s%%{c}%s%%{r}%s%s%s\n" \
     "$(segment 'LAN' "${local_ip:-down}")" \

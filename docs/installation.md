@@ -131,7 +131,7 @@ El instalador deja disponible:
 ~/.local/bin/kdc-power-menu
 ```
 
-La barra muestra el icono `⏻` en la zona derecha. Al hacer click izquierdo abre un menú con `dmenu` para bloquear sesión, cerrar sesión, suspender, reiniciar o apagar. Las acciones de reinicio y apagado piden confirmación antes de ejecutarse.
+La barra muestra `PWR` en la zona derecha. Al hacer click izquierdo abre un menú con `dmenu` para bloquear sesión, cerrar sesión, suspender, reiniciar o apagar. Las acciones de reinicio y apagado piden confirmación antes de ejecutarse.
 
 ## Starship
 

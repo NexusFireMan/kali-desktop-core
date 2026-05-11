@@ -41,8 +41,9 @@ El indicador central de workspaces usa estas claves opcionales en `theme.conf`:
 
 ```bash
 BAR_WS_ACTIVE="$BAR_ALERT"
-BAR_WS_INACTIVE="$BAR_FG"
-BAR_WS_SYMBOL="●"
+BAR_WS_INACTIVE="$BAR_MUTED"
+BAR_WS_COUNT=5
+BAR_WS_SYMBOL="•"
 BAR_WS_SEPARATOR=" "
 ```
 
