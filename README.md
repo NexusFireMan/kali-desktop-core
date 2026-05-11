@@ -241,7 +241,7 @@ El botón `PWR` de la barra abre `kdc-power-menu` con opciones para bloquear ses
 - `Mod+d`: abrir dmenu
 - `Mod+Shift+r`: recargar i3
 - `Mod+Shift+q`: cerrar ventana
-- `Mod+Shift+e`: salir de la sesión
+- `Mod+Shift+e`: abrir menú de sesión/power
 - `Mod+Ctrl+l`: bloquear sesión
 - `Mod+h/j/k/l`: mover foco
 - `Mod+Shift+flechas`: mover ventanas
