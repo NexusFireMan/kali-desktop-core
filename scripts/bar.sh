@@ -40,9 +40,12 @@ load_theme_defaults() {
   source_theme || true
 
   BAR_WS_ACTIVE="${BAR_WS_ACTIVE:-$BAR_ALERT}"
-  BAR_WS_INACTIVE="${BAR_WS_INACTIVE:-$BAR_FG}"
+  BAR_WS_INACTIVE="${BAR_WS_INACTIVE:-$BAR_MUTED}"
   BAR_WS_SYMBOL="${BAR_WS_SYMBOL:-●}"
   BAR_WS_SEPARATOR="${BAR_WS_SEPARATOR:- }"
+  BAR_WS_COUNT="${BAR_WS_COUNT:-5}"
+  # shellcheck disable=SC2034
+  BAR_POWER_ICON="${BAR_POWER_ICON:-⏻}"
 }
 
 segment() {
@@ -53,20 +56,66 @@ segment() {
   printf "%%{F%s}%s%%{F%s} %s%%{F-}   " "$BAR_MUTED" "$label" "$color" "${value:---}"
 }
 
-workspace_dots() {
-  local output line focused color first=1
+bar_debug_log() {
+  [[ "${KDC_BAR_DEBUG:-0}" == "1" ]] || return 0
+  printf '[%s] workspace_dots: %s\n' "$(date '+%F %T')" "$1" >> "$BAR_LOG_FILE"
+}
 
-  is_command i3-msg || return 0
+workspace_dots_fallback() {
+  local count="${BAR_WS_COUNT:-5}"
+  local i color
+
+  if [[ ! "$count" =~ ^[0-9]+$ || "$count" -lt 1 ]]; then
+    count=5
+  fi
+
+  for ((i = 1; i <= count; i++)); do
+    if [[ $i -eq 1 ]]; then
+      color="$BAR_WS_ACTIVE"
+    else
+      color="$BAR_WS_INACTIVE"
+    fi
+
+    if [[ $i -gt 1 ]]; then
+      printf '%s' "$BAR_WS_SEPARATOR"
+    fi
+
+    printf '%%{F%s}%s%%{F-}' "$color" "$BAR_WS_SYMBOL"
+  done
+}
+
+workspace_dots() {
+  local output objects line focused color first=1 parsed=0 focused_found=0 result="" dot
+
+  if ! is_command i3-msg; then
+    bar_debug_log "i3-msg no está disponible; usando fallback"
+    workspace_dots_fallback
+    return 0
+  fi
 
   output="$(i3-msg -t get_workspaces 2>/dev/null || true)"
-  [[ -n "${output:-}" ]] || return 0
+  if [[ -z "${output:-}" ]]; then
+    bar_debug_log "i3-msg no devolvió workspaces; usando fallback"
+    workspace_dots_fallback
+    return 0
+  fi
+
+  objects="$(
+    printf '%s\n' "$output" \
+      | sed 's#}[[:space:]]*,[[:space:]]*{#}\n{#g' \
+      | sed 's/^\[//' \
+      | sed 's/\]$//'
+  )"
 
   while IFS= read -r line; do
     [[ -n "$line" ]] || continue
+    [[ "$line" == *'"name"'* || "$line" == *'"num"'* ]] || continue
+    parsed=1
 
     focused=0
     if printf '%s\n' "$line" | grep -Eq '"focused"[[:space:]]*:[[:space:]]*true'; then
       focused=1
+      focused_found=1
     fi
 
     if [[ $focused -eq 1 ]]; then
@@ -76,12 +125,24 @@ workspace_dots() {
     fi
 
     if [[ $first -eq 0 ]]; then
-      printf '%s' "$BAR_WS_SEPARATOR"
+      result+="$BAR_WS_SEPARATOR"
     fi
 
-    printf '%%{F%s}%s%%{F-}' "$color" "$BAR_WS_SYMBOL"
+    printf -v dot '%%{F%s}%s%%{F-}' "$color" "$BAR_WS_SYMBOL"
+    result+="$dot"
     first=0
-  done < <(printf '%s\n' "$output" | tr '{' '\n' | grep '"name"' || true)
+  done <<< "$objects"
+
+  if [[ $parsed -eq 0 || $focused_found -eq 0 ]]; then
+    if [[ $parsed -eq 0 ]]; then
+      bar_debug_log "no se pudieron parsear workspaces; usando fallback"
+    else
+      bar_debug_log "no se pudo detectar workspace focused; usando fallback"
+    fi
+    workspace_dots_fallback
+  else
+    printf '%s' "$result"
+  fi
 }
 
 render_line() {
