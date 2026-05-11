@@ -73,6 +73,7 @@ Principios del proyecto:
 
 - Barra ligera en `lemonbar` con IP local, VPN, Docker, TARGET, estado VPN y hora.
 - Indicador central de workspaces en `lemonbar`.
+- Menú de sesión/power desde la barra.
 - TARGET persistente compartido entre shell y barra.
 - Alias y funciones útiles para flujos de pentesting.
 - Temas intercambiables sin rehacer toda la configuración.
@@ -233,6 +234,8 @@ gomap -s "$TARGET"
 La función `extractPorts` parsea un resultado de `nmap`, copia los puertos al portapapeles y los imprime listos para reutilizar.
 
 ## Keybindings principales de i3
+
+El icono `⏻` de la barra abre `kdc-power-menu` con opciones para bloquear sesión, cerrar sesión, suspender, reiniciar y apagar.
 
 - `Mod+Return`: abrir terminal
 - `Mod+d`: abrir dmenu

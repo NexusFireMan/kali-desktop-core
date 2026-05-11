@@ -19,6 +19,7 @@ source "$UTILS_SCRIPT"
 BAR_PID_FILE="${HOME}/.cache/kdc-bar.pid"
 BAR_LOG_FILE="${HOME}/.cache/kdc-bar.log"
 BAR_REFRESH_SECONDS="${BAR_REFRESH_SECONDS:-3}"
+POWER_MENU="${HOME}/.local/bin/kdc-power-menu"
 REFRESH_FLAG=0
 
 on_refresh() {
@@ -44,8 +45,8 @@ load_theme_defaults() {
   BAR_WS_SYMBOL="${BAR_WS_SYMBOL:-●}"
   BAR_WS_SEPARATOR="${BAR_WS_SEPARATOR:- }"
   BAR_WS_COUNT="${BAR_WS_COUNT:-5}"
-  # shellcheck disable=SC2034
   BAR_POWER_ICON="${BAR_POWER_ICON:-⏻}"
+  BAR_POWER_COLOR="${BAR_POWER_COLOR:-$BAR_ALERT}"
 }
 
 segment() {
@@ -145,8 +146,16 @@ workspace_dots() {
   fi
 }
 
+power_button() {
+  if [[ -x "$POWER_MENU" ]]; then
+    printf '%%{A1:%s:}%%{F%s}%s%%{F-}%%{A}' "$POWER_MENU" "$BAR_POWER_COLOR" "$BAR_POWER_ICON"
+  else
+    printf '%%{F%s}%s%%{F-}' "$BAR_POWER_COLOR" "$BAR_POWER_ICON"
+  fi
+}
+
 render_line() {
-  local local_ip vpn_ip docker_ip target vpn_state clock workspaces
+  local local_ip vpn_ip docker_ip target vpn_state clock workspaces power
 
   local_ip="$("$NETWORK_SCRIPT" local 2>/dev/null || true)"
   vpn_ip="$("$NETWORK_SCRIPT" vpn 2>/dev/null || true)"
@@ -155,15 +164,17 @@ render_line() {
   target="$(read_target)"
   clock="$(date '+%H:%M')"
   workspaces="$(workspace_dots)"
+  power="$(power_button)"
 
-  printf "%%{l}%s%s%s%s%%{c}%s%%{r}%s%s\n" \
+  printf "%%{l}%s%s%s%s%%{c}%s%%{r}%s%s%s\n" \
     "$(segment 'LAN' "${local_ip:-down}")" \
     "$(segment 'TUN' "${vpn_ip:-off}" "$BAR_ACCENT")" \
     "$(segment 'DOCKER' "${docker_ip:-off}" "$BAR_MUTED")" \
     "$(segment 'TARGET' "${target:-none}" "$BAR_ACCENT")" \
     "$workspaces" \
     "$(segment 'VPN' "$vpn_state" "$([[ "$vpn_state" == "VPN:up" ]] && printf '%s' "$BAR_ACCENT" || printf '%s' "$BAR_ALERT")")" \
-    "$(segment 'TIME' "$clock")"
+    "$(segment 'TIME' "$clock")" \
+    "$power"
 }
 
 bar_geometry() {

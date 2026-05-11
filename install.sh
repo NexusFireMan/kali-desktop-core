@@ -365,7 +365,7 @@ build_plan() {
     BACKUP_TARGETS+=("${HOME}/.zshrc")
     BACKUP_TARGETS+=("${HOME}/.config/starship.toml")
 
-    for src in "$SCRIPTS_SRC"/bar.sh "$SCRIPTS_SRC"/dmenu.sh "$SCRIPTS_SRC"/network.sh "$SCRIPTS_SRC"/target.sh "$SCRIPTS_SRC"/gomap.sh "$SCRIPTS_SRC"/utils.sh "$SCRIPTS_SRC"/refresh.sh; do
+    for src in "$SCRIPTS_SRC"/bar.sh "$SCRIPTS_SRC"/dmenu.sh "$SCRIPTS_SRC"/network.sh "$SCRIPTS_SRC"/target.sh "$SCRIPTS_SRC"/gomap.sh "$SCRIPTS_SRC"/utils.sh "$SCRIPTS_SRC"/refresh.sh "$SCRIPTS_SRC"/power-menu.sh; do
       case "$(basename "$src")" in
         bar.sh) dest="${HOME}/.local/bin/kdc-bar" ;;
         dmenu.sh) dest="${HOME}/.local/bin/kdc-dmenu" ;;
@@ -374,6 +374,7 @@ build_plan() {
         gomap.sh) dest="${HOME}/.local/bin/kdc-gomap" ;;
         utils.sh) dest="${HOME}/.local/bin/kdc-utils" ;;
         refresh.sh) dest="${HOME}/.local/bin/kdc-refresh" ;;
+        power-menu.sh) dest="${HOME}/.local/bin/kdc-power-menu" ;;
         *) dest="" ;;
       esac
       [[ -n "$dest" ]] && SCRIPT_TARGETS+=("$src -> $dest")
@@ -615,6 +616,7 @@ copy_configs() {
   dry_run_or_exec install -m 0755 "$SCRIPTS_SRC/gomap.sh" "${HOME}/.local/bin/kdc-gomap"
   dry_run_or_exec install -m 0755 "$SCRIPTS_SRC/utils.sh" "${HOME}/.local/bin/kdc-utils"
   dry_run_or_exec install -m 0755 "$SCRIPTS_SRC/refresh.sh" "${HOME}/.local/bin/kdc-refresh"
+  dry_run_or_exec install -m 0755 "$SCRIPTS_SRC/power-menu.sh" "${HOME}/.local/bin/kdc-power-menu"
 
   if [[ -f "$SCRIPTS_SRC/doctor.sh" ]]; then
     dry_run_or_exec install -m 0755 "$SCRIPTS_SRC/doctor.sh" "${HOME}/.local/bin/kdc-doctor"

@@ -123,6 +123,16 @@ rb
 
 Si conectas una VPN manualmente, por ejemplo con `sudo openvpn`, ejecuta `rb` para forzar el refresco inmediato de la barra.
 
+## Menú de sesión
+
+El instalador deja disponible:
+
+```bash
+~/.local/bin/kdc-power-menu
+```
+
+La barra muestra el icono `⏻` en la zona derecha. Al hacer click izquierdo abre un menú con `dmenu` para bloquear sesión, cerrar sesión, suspender, reiniciar o apagar. Las acciones de reinicio y apagado piden confirmación antes de ejecutarse.
+
 ## Starship
 
 ```bash

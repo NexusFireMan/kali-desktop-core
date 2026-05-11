@@ -37,6 +37,8 @@ BAR_WS_ACTIVE="$BAR_ALERT"
 BAR_WS_INACTIVE="$BAR_FG"
 BAR_WS_SYMBOL="●"
 BAR_WS_SEPARATOR=" "
+BAR_POWER_ICON="⏻"
+BAR_POWER_COLOR="$BAR_ALERT"
 ```
 
 ## Ajustar la barra
@@ -48,6 +50,8 @@ La barra se genera desde `scripts/bar.sh`. Para extenderla:
 3. Mantén el refresco ligero evitando comandos costosos dentro del bucle.
 
 El indicador central de workspaces se puede ajustar desde el theme con `BAR_WS_ACTIVE`, `BAR_WS_INACTIVE`, `BAR_WS_SYMBOL` y `BAR_WS_SEPARATOR`.
+
+El icono de sesión de la derecha usa `kdc-power-menu`. Puedes ajustar `BAR_POWER_ICON` y `BAR_POWER_COLOR` desde el theme.
 
 ## Shell y productividad
 

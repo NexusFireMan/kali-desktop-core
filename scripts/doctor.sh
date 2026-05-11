@@ -239,6 +239,7 @@ check_scripts() {
   check_file "${HOME}/.local/bin/kdc-utils"
   check_file "${HOME}/.local/bin/kdc-doctor"
   check_file "${HOME}/.local/bin/kdc-refresh"
+  check_file "${HOME}/.local/bin/kdc-power-menu"
   check_file "${HOME}/.local/bin/kdc-gomap" optional
 }
 
