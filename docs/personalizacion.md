@@ -33,6 +33,10 @@ BAR_MUTED="#7f8792"
 BAR_ACCENT="#8fb7ff"
 BAR_ALERT="#c75b65"
 BAR_FONT="JetBrainsMono Nerd Font:size=10"
+BAR_WS_ACTIVE="$BAR_ALERT"
+BAR_WS_INACTIVE="$BAR_FG"
+BAR_WS_SYMBOL="●"
+BAR_WS_SEPARATOR=" "
 ```
 
 ## Ajustar la barra
@@ -42,6 +46,8 @@ La barra se genera desde `scripts/bar.sh`. Para extenderla:
 1. Añade una función o reutiliza `scripts/network.sh`.
 2. Inserta un nuevo segmento en `render_line`.
 3. Mantén el refresco ligero evitando comandos costosos dentro del bucle.
+
+El indicador central de workspaces se puede ajustar desde el theme con `BAR_WS_ACTIVE`, `BAR_WS_INACTIVE`, `BAR_WS_SYMBOL` y `BAR_WS_SEPARATOR`.
 
 ## Shell y productividad
 

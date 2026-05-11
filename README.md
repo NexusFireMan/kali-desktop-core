@@ -72,6 +72,7 @@ Principios del proyecto:
 ## Características
 
 - Barra ligera en `lemonbar` con IP local, VPN, Docker, TARGET, estado VPN y hora.
+- Indicador central de workspaces en `lemonbar`.
 - TARGET persistente compartido entre shell y barra.
 - Alias y funciones útiles para flujos de pentesting.
 - Temas intercambiables sin rehacer toda la configuración.

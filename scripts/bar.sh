@@ -38,6 +38,11 @@ load_theme_defaults() {
   BAR_FONT="JetBrainsMono Nerd Font:size=10"
 
   source_theme || true
+
+  BAR_WS_ACTIVE="${BAR_WS_ACTIVE:-$BAR_ALERT}"
+  BAR_WS_INACTIVE="${BAR_WS_INACTIVE:-$BAR_FG}"
+  BAR_WS_SYMBOL="${BAR_WS_SYMBOL:-●}"
+  BAR_WS_SEPARATOR="${BAR_WS_SEPARATOR:- }"
 }
 
 segment() {
@@ -48,8 +53,39 @@ segment() {
   printf "%%{F%s}%s%%{F%s} %s%%{F-}   " "$BAR_MUTED" "$label" "$color" "${value:---}"
 }
 
+workspace_dots() {
+  local output line focused color first=1
+
+  is_command i3-msg || return 0
+
+  output="$(i3-msg -t get_workspaces 2>/dev/null || true)"
+  [[ -n "${output:-}" ]] || return 0
+
+  while IFS= read -r line; do
+    [[ -n "$line" ]] || continue
+
+    focused=0
+    if printf '%s\n' "$line" | grep -Eq '"focused"[[:space:]]*:[[:space:]]*true'; then
+      focused=1
+    fi
+
+    if [[ $focused -eq 1 ]]; then
+      color="$BAR_WS_ACTIVE"
+    else
+      color="$BAR_WS_INACTIVE"
+    fi
+
+    if [[ $first -eq 0 ]]; then
+      printf '%s' "$BAR_WS_SEPARATOR"
+    fi
+
+    printf '%%{F%s}%s%%{F-}' "$color" "$BAR_WS_SYMBOL"
+    first=0
+  done < <(printf '%s\n' "$output" | tr '{' '\n' | grep '"name"' || true)
+}
+
 render_line() {
-  local local_ip vpn_ip docker_ip target vpn_state clock
+  local local_ip vpn_ip docker_ip target vpn_state clock workspaces
 
   local_ip="$("$NETWORK_SCRIPT" local 2>/dev/null || true)"
   vpn_ip="$("$NETWORK_SCRIPT" vpn 2>/dev/null || true)"
@@ -57,12 +93,14 @@ render_line() {
   vpn_state="$("$NETWORK_SCRIPT" vpn-state 2>/dev/null || true)"
   target="$(read_target)"
   clock="$(date '+%H:%M')"
+  workspaces="$(workspace_dots)"
 
-  printf "%%{l}%s%s%s%s%%{r}%s%s\n" \
+  printf "%%{l}%s%s%s%s%%{c}%s%%{r}%s%s\n" \
     "$(segment 'LAN' "${local_ip:-down}")" \
     "$(segment 'TUN' "${vpn_ip:-off}" "$BAR_ACCENT")" \
     "$(segment 'DOCKER' "${docker_ip:-off}" "$BAR_MUTED")" \
     "$(segment 'TARGET' "${target:-none}" "$BAR_ACCENT")" \
+    "$workspaces" \
     "$(segment 'VPN' "$vpn_state" "$([[ "$vpn_state" == "VPN:up" ]] && printf '%s' "$BAR_ACCENT" || printf '%s' "$BAR_ALERT")")" \
     "$(segment 'TIME' "$clock")"
 }
@@ -101,7 +139,8 @@ launch_bar() {
 }
 
 if [[ -f "$BAR_PID_FILE" ]]; then
-  old_pid="$(cat "$BAR_PID_FILE" 2>/dev/null || true)"
+  old_pid=""
+  IFS= read -r old_pid < "$BAR_PID_FILE" || true
   if [[ -n "${old_pid:-}" && "$old_pid" != "$$" ]] && kill -0 "$old_pid" 2>/dev/null; then
     kill "$old_pid" 2>/dev/null || true
     sleep 1

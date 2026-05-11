@@ -9,6 +9,7 @@ El sistema de themes separa la identidad visual de la lógica del entorno. Así 
 Cada theme controla:
 
 - colores de `lemonbar`
+- indicador central de workspaces de `lemonbar`
 - colores de `kitty`
 - acentos visuales
 - wallpaper real aplicado por `feh`
@@ -33,6 +34,19 @@ Tema más austero y profundo, con acentos cálidos apagados para mantener la int
 - Evitar contrastes agresivos.
 - Mantener fondos estables entre `#090b0d` y `#101319`.
 - Reservar el color de alerta para eventos importantes.
+
+## Workspaces en la barra
+
+El indicador central de workspaces usa estas claves opcionales en `theme.conf`:
+
+```bash
+BAR_WS_ACTIVE="$BAR_ALERT"
+BAR_WS_INACTIVE="$BAR_FG"
+BAR_WS_SYMBOL="●"
+BAR_WS_SEPARATOR=" "
+```
+
+Si no se definen, `scripts/bar.sh` aplica valores por defecto basados en la paleta del theme.
 
 ## Seguridad
 
