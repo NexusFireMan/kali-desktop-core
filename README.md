@@ -60,6 +60,7 @@ Principios del proyecto:
 │   ├── target.sh
 │   ├── dmenu.sh
 │   ├── doctor.sh
+│   ├── power-menu.sh
 │   ├── refresh.sh
 │   └── utils.sh
 ├── themes/

@@ -137,9 +137,9 @@ workspace_dots() {
   result="  "
   for ((i = 1; i <= count; i++)); do
     if [[ $i -eq active ]]; then
-      color="$BAR_ALERT"
+      color="$BAR_WS_ACTIVE"
     else
-      color="$BAR_MUTED"
+      color="$BAR_WS_INACTIVE"
     fi
 
     if [[ "${BAR_WS_STYLE:-numbers}" == "dots" ]]; then
