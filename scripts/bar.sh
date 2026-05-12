@@ -45,6 +45,7 @@ load_theme_defaults() {
   BAR_WS_SYMBOL="${BAR_WS_SYMBOL:-•}"
   BAR_WS_SEPARATOR="${BAR_WS_SEPARATOR:- }"
   BAR_WS_COUNT="${BAR_WS_COUNT:-5}"
+  BAR_WS_STYLE="${BAR_WS_STYLE:-numbers}"
   BAR_POWER_ICON="${BAR_POWER_ICON:-PWR}"
   BAR_POWER_COLOR="${BAR_POWER_COLOR:-$BAR_ALERT}"
 }
@@ -102,7 +103,7 @@ focused_workspace_num() {
 
 workspace_dots() {
   local count="${BAR_WS_COUNT:-5}"
-  local active i color
+  local active i color label result
 
   if [[ ! "$count" =~ ^[0-9]+$ || "$count" -lt 1 ]]; then
     count=5
@@ -113,21 +114,36 @@ workspace_dots() {
     active=1
   fi
 
-  bar_debug_log "workspace activo detectado=$active, BAR_WS_COUNT=$count"
+  bar_debug_log "active workspace detectado=$active, BAR_WS_COUNT=$count"
 
+  result="  "
   for ((i = 1; i <= count; i++)); do
     if [[ $i -eq active ]]; then
-      color="$BAR_WS_ACTIVE"
+      color="$BAR_ALERT"
     else
-      color="$BAR_WS_INACTIVE"
+      color="$BAR_MUTED"
+    fi
+
+    if [[ "${BAR_WS_STYLE:-numbers}" == "dots" ]]; then
+      label="$BAR_WS_SYMBOL"
+    else
+      label="$i"
     fi
 
     if [[ $i -gt 1 ]]; then
-      printf '%s' "$BAR_WS_SEPARATOR"
+      if [[ "${BAR_WS_STYLE:-numbers}" == "dots" ]]; then
+        result+="$BAR_WS_SEPARATOR"
+      else
+        result+="  "
+      fi
     fi
 
-    printf '%%{F%s}%s%%{F-}' "$color" "$BAR_WS_SYMBOL"
+    result+="%{F${color}}${label}%{F-}"
   done
+
+  result+="  "
+  bar_debug_log "string final de workspaces=$result"
+  printf '%s' "$result"
 }
 
 power_button() {
@@ -154,6 +170,7 @@ render_line() {
   target="$(read_target)"
   clock="$(date '+%H:%M')"
   workspaces="$(workspace_dots)"
+  [[ -z "$workspaces" ]] && workspaces="  1  2  3  4  5  "
   power="   $(power_button)"
 
   printf "%%{l}%s%s%s%s%%{c}%s%%{r}%s%s%s\n" \
