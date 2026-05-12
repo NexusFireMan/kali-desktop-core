@@ -16,6 +16,12 @@ fi
 # shellcheck disable=SC1090
 source "$UTILS_SCRIPT"
 
+if ! declare -F is_command >/dev/null 2>&1; then
+  is_command() {
+    command -v "$1" >/dev/null 2>&1
+  }
+fi
+
 BAR_PID_FILE="${HOME}/.cache/kdc-bar.pid"
 BAR_LOG_FILE="${HOME}/.cache/kdc-bar.log"
 BAR_REFRESH_SECONDS="${BAR_REFRESH_SECONDS:-3}"
@@ -31,15 +37,21 @@ trap on_refresh USR1
 mkdir -p "$(dirname "$BAR_PID_FILE")"
 
 load_theme_defaults() {
-  BAR_BG="#0d0f12"
-  BAR_FG="#d0d0d0"
-  BAR_MUTED="#7f8792"
-  BAR_ACCENT="#8fb7ff"
-  BAR_ALERT="#c75b65"
-  BAR_FONT="JetBrainsMono Nerd Font:size=10"
+  BAR_BG="${BAR_BG:-#0d0f12}"
+  BAR_FG="${BAR_FG:-#d0d0d0}"
+  BAR_MUTED="${BAR_MUTED:-#7f8792}"
+  BAR_ACCENT="${BAR_ACCENT:-#8fb7ff}"
+  BAR_ALERT="${BAR_ALERT:-#c75b65}"
+  BAR_FONT="${BAR_FONT:-fixed}"
 
   source_theme || true
 
+  BAR_BG="${BAR_BG:-#0d0f12}"
+  BAR_FG="${BAR_FG:-#d0d0d0}"
+  BAR_MUTED="${BAR_MUTED:-#7f8792}"
+  BAR_ACCENT="${BAR_ACCENT:-#8fb7ff}"
+  BAR_ALERT="${BAR_ALERT:-#c75b65}"
+  BAR_FONT="${BAR_FONT:-fixed}"
   BAR_WS_ACTIVE="${BAR_WS_ACTIVE:-$BAR_ALERT}"
   BAR_WS_INACTIVE="${BAR_WS_INACTIVE:-$BAR_MUTED}"
   BAR_WS_SYMBOL="${BAR_WS_SYMBOL:-•}"

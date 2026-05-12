@@ -43,11 +43,14 @@ El indicador central de workspaces usa estas claves opcionales en `theme.conf`:
 BAR_WS_ACTIVE="$BAR_ALERT"
 BAR_WS_INACTIVE="$BAR_MUTED"
 BAR_WS_COUNT=5
+BAR_WS_STYLE="numbers"
 BAR_WS_SYMBOL="•"
 BAR_WS_SEPARATOR=" "
 ```
 
-Si no se definen, `scripts/bar.sh` aplica valores por defecto basados en la paleta del theme.
+Si no se definen, `scripts/bar.sh` aplica valores por defecto basados en la paleta del theme. Por defecto se muestran números (`1 2 3 4 5`) para mantener visibilidad en una Kali limpia; `BAR_WS_STYLE="dots"` permite volver al modo de símbolos.
+
+La fuente de barra incluida en los themes es `fixed`, una fuente X11 básica que `lemonbar` carga de forma fiable. Las Nerd Fonts pueden usarse como personalización opcional, pero no son necesarias para que workspaces y `PWR` sean visibles.
 
 ## Seguridad
 

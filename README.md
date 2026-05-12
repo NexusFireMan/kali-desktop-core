@@ -72,7 +72,7 @@ Principios del proyecto:
 ## Características
 
 - Barra ligera en `lemonbar` con IP local, VPN, Docker, TARGET, estado VPN y hora.
-- Indicador central de workspaces en `lemonbar`.
+- Indicador central de workspaces en `lemonbar`, visible por defecto como `1 2 3 4 5`.
 - Menú de sesión/power desde la barra.
 - TARGET persistente compartido entre shell y barra.
 - Alias y funciones útiles para flujos de pentesting.
@@ -185,7 +185,7 @@ git pull
 ./install.sh --configs
 ```
 
-La barra escribe errores de arranque en `~/.cache/kdc-bar.log`.
+La barra escribe errores de arranque en `~/.cache/kdc-bar.log`. Usa la fuente X11 `fixed` por defecto para funcionar en instalaciones limpias; puedes cambiar `BAR_FONT` desde el theme si tienes otra fuente compatible.
 
 ## Validación
 

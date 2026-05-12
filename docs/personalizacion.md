@@ -32,10 +32,11 @@ BAR_FG="#d0d0d0"
 BAR_MUTED="#7f8792"
 BAR_ACCENT="#8fb7ff"
 BAR_ALERT="#c75b65"
-BAR_FONT="JetBrainsMono Nerd Font:size=10"
+BAR_FONT="fixed"
 BAR_WS_ACTIVE="$BAR_ALERT"
 BAR_WS_INACTIVE="$BAR_MUTED"
 BAR_WS_COUNT=5
+BAR_WS_STYLE="numbers"
 BAR_WS_SYMBOL="•"
 BAR_WS_SEPARATOR=" "
 BAR_POWER_ICON="PWR"
@@ -50,7 +51,9 @@ La barra se genera desde `scripts/bar.sh`. Para extenderla:
 2. Inserta un nuevo segmento en `render_line`.
 3. Mantén el refresco ligero evitando comandos costosos dentro del bucle.
 
-El indicador central de workspaces se puede ajustar desde el theme con `BAR_WS_ACTIVE`, `BAR_WS_INACTIVE`, `BAR_WS_SYMBOL` y `BAR_WS_SEPARATOR`.
+El indicador central de workspaces muestra números por defecto (`1 2 3 4 5`) para no depender de fuentes con símbolos especiales. Puedes ajustar `BAR_WS_ACTIVE`, `BAR_WS_INACTIVE`, `BAR_WS_COUNT` y `BAR_WS_STYLE`. Si defines `BAR_WS_STYLE="dots"`, usa `BAR_WS_SYMBOL` y `BAR_WS_SEPARATOR`.
+
+La fuente por defecto de `lemonbar` es `fixed` por compatibilidad con instalaciones limpias. Puedes cambiar `BAR_FONT` si tienes otra fuente compatible disponible.
 
 El icono de sesión de la derecha usa `kdc-power-menu`. Puedes ajustar `BAR_POWER_ICON` y `BAR_POWER_COLOR` desde el theme.
 

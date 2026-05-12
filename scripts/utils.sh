@@ -5,6 +5,10 @@ KDC_CONFIG_DIR="${HOME}/.config/kali-desktop-core"
 KDC_THEME_FILE="${KDC_CONFIG_DIR}/theme.conf"
 TARGET_FILE="${HOME}/.config/target"
 
+is_command() {
+  command -v "$1" >/dev/null 2>&1
+}
+
 ensure_target_file() {
   mkdir -p "$(dirname "$TARGET_FILE")"
   touch "$TARGET_FILE"
