@@ -59,7 +59,7 @@ segment() {
 
 bar_debug_log() {
   [[ "${KDC_BAR_DEBUG:-0}" == "1" ]] || return 0
-  printf '[%s] workspace_dots: %s\n' "$(date '+%F %T')" "$1" >> "$BAR_LOG_FILE"
+  printf '[%s] kdc-bar: %s\n' "$(date '+%F %T')" "$1" >> "$BAR_LOG_FILE"
 }
 
 focused_workspace_num() {
@@ -135,7 +135,11 @@ power_button() {
     bar_debug_log "power menu disponible: $POWER_MENU"
     printf '%%{A1:%s:}%%{F%s}%s%%{F-}%%{A}' "$POWER_MENU" "$BAR_POWER_COLOR" "$BAR_POWER_ICON"
   else
-    bar_debug_log "power menu no instalado; mostrando fallback no clicable"
+    if [[ -e "$POWER_MENU" ]]; then
+      bar_debug_log "power menu no ejecutable: $POWER_MENU"
+    else
+      bar_debug_log "power menu no existe: $POWER_MENU"
+    fi
     printf '%%{F%s}%s%%{F-}' "$BAR_POWER_COLOR" "$BAR_POWER_ICON"
   fi
 }
