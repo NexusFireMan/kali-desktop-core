@@ -25,7 +25,7 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+q kill
 # Menú de sesión/power integrado con dmenu.
-bindsym $mod+Shift+e exec --no-startup-id sh -c 'if [ -x "$HOME/.local/bin/kdc-power-menu" ]; then "$HOME/.local/bin/kdc-power-menu"; else i3-msg exit; fi'
+bindsym $mod+Shift+e exec --no-startup-id $HOME/.local/bin/kdc-power-menu
 bindsym $mod+Ctrl+l exec i3lock -c 0d0f12
 
 bindsym $mod+h focus left
