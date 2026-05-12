@@ -161,7 +161,7 @@ workspace_dots() {
 power_button() {
   if [[ -x "$POWER_MENU" ]]; then
     bar_debug_log "power menu disponible: $POWER_MENU"
-    printf '%%{A1:%s:}%%{F%s}%s%%{F-}%%{A}' "$POWER_MENU" "$BAR_POWER_COLOR" "$BAR_POWER_ICON"
+    printf '%%{A1:kdc-power-menu:}%%{F%s}%s%%{F-}%%{A}' "$BAR_POWER_COLOR" "$BAR_POWER_ICON"
   else
     if [[ -e "$POWER_MENU" ]]; then
       bar_debug_log "power menu no ejecutable: $POWER_MENU"
@@ -170,6 +170,23 @@ power_button() {
     fi
     printf '%%{F%s}%s%%{F-}' "$BAR_POWER_COLOR" "$BAR_POWER_ICON"
   fi
+}
+
+handle_bar_action() {
+  local action="$1"
+
+  bar_debug_log "lemonbar emitió acción: $action"
+
+  case "$action" in
+    kdc-power-menu)
+      if [[ -x "$POWER_MENU" ]]; then
+        bar_debug_log "ejecutando kdc-power-menu: $POWER_MENU"
+        "$POWER_MENU" >/dev/null 2>&1 &
+      else
+        bar_debug_log "POWER_MENU no ejecutable: $POWER_MENU"
+      fi
+      ;;
+  esac
 }
 
 render_line() {
@@ -212,21 +229,27 @@ launch_bar() {
   local elapsed
 
   load_theme_defaults
-  while :; do
-    render_line
-    REFRESH_FLAG=0
+  {
+    while :; do
+      render_line
+      REFRESH_FLAG=0
 
-    if [[ ! "$BAR_REFRESH_SECONDS" =~ ^[0-9]+$ || "$BAR_REFRESH_SECONDS" -lt 1 ]]; then
-      BAR_REFRESH_SECONDS=3
-    fi
+      if [[ ! "$BAR_REFRESH_SECONDS" =~ ^[0-9]+$ || "$BAR_REFRESH_SECONDS" -lt 1 ]]; then
+        BAR_REFRESH_SECONDS=3
+      fi
 
-    elapsed=0
-    while [[ $elapsed -lt $BAR_REFRESH_SECONDS ]]; do
-      sleep 1
-      [[ $REFRESH_FLAG -eq 1 ]] && break
-      elapsed=$((elapsed + 1))
+      elapsed=0
+      while [[ $elapsed -lt $BAR_REFRESH_SECONDS ]]; do
+        sleep 1
+        [[ $REFRESH_FLAG -eq 1 ]] && break
+        elapsed=$((elapsed + 1))
+      done
     done
-  done | lemonbar -p -d -B "$BAR_BG" -F "$BAR_FG" -f "$BAR_FONT" -g "$(bar_geometry)"
+  } \
+    | lemonbar -p -d -B "$BAR_BG" -F "$BAR_FG" -f "$BAR_FONT" -g "$(bar_geometry)" \
+    | while IFS= read -r action; do
+        handle_bar_action "$action" || true
+      done
 }
 
 if [[ -f "$BAR_PID_FILE" ]]; then
