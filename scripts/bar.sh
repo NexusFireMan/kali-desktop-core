@@ -43,6 +43,9 @@ load_theme_defaults() {
   BAR_ACCENT="${BAR_ACCENT:-#8fb7ff}"
   BAR_ALERT="${BAR_ALERT:-#c75b65}"
   BAR_FONT="${BAR_FONT:-fixed}"
+  BAR_HEIGHT="${BAR_HEIGHT:-24}"
+  BAR_MARGIN_X="${BAR_MARGIN_X:-6}"
+  BAR_OFFSET_Y="${BAR_OFFSET_Y:-0}"
 
   source_theme || true
 
@@ -52,6 +55,9 @@ load_theme_defaults() {
   BAR_ACCENT="${BAR_ACCENT:-#8fb7ff}"
   BAR_ALERT="${BAR_ALERT:-#c75b65}"
   BAR_FONT="${BAR_FONT:-fixed}"
+  BAR_HEIGHT="${BAR_HEIGHT:-24}"
+  BAR_MARGIN_X="${BAR_MARGIN_X:-6}"
+  BAR_OFFSET_Y="${BAR_OFFSET_Y:-0}"
   BAR_WS_ACTIVE="${BAR_WS_ACTIVE:-$BAR_ALERT}"
   BAR_WS_INACTIVE="${BAR_WS_INACTIVE:-$BAR_MUTED}"
   BAR_WS_SYMBOL="${BAR_WS_SYMBOL:-•}"
@@ -214,14 +220,31 @@ render_line() {
 }
 
 bar_geometry() {
-  local width
+  local screen_width bar_width
 
-  width="$(xrandr 2>/dev/null | awk '/ connected/ {for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+x[0-9]+\+/) {sub(/x.*/, "", $i); print $i; exit}}' | head -n1)"
+  screen_width="$({ xrandr 2>/dev/null || true; } | awk '/ connected/ {for (i=1; i<=NF; i++) if ($i ~ /^[0-9]+x[0-9]+\+/) {sub(/x.*/, "", $i); print $i; exit}}' | head -n1)"
 
-  if [[ -n "${width:-}" ]]; then
-    printf '%sx24+0+0' "$width"
+  if [[ ! "$screen_width" =~ ^[0-9]+$ || "$screen_width" -lt 1 ]]; then
+    screen_width=1920
+  fi
+
+  if [[ ! "$BAR_HEIGHT" =~ ^[0-9]+$ || "$BAR_HEIGHT" -lt 1 ]]; then
+    BAR_HEIGHT=24
+  fi
+
+  if [[ ! "$BAR_MARGIN_X" =~ ^[0-9]+$ ]]; then
+    BAR_MARGIN_X=6
+  fi
+
+  if [[ ! "$BAR_OFFSET_Y" =~ ^[0-9]+$ ]]; then
+    BAR_OFFSET_Y=0
+  fi
+
+  bar_width=$((screen_width - (BAR_MARGIN_X * 2)))
+  if [[ $bar_width -lt 200 ]]; then
+    printf '%sx%s+0+%s' "$screen_width" "$BAR_HEIGHT" "$BAR_OFFSET_Y"
   else
-    printf '1920x24+0+0'
+    printf '%sx%s+%s+%s' "$bar_width" "$BAR_HEIGHT" "$BAR_MARGIN_X" "$BAR_OFFSET_Y"
   fi
 }
 

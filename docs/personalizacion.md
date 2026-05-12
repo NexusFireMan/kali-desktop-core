@@ -33,6 +33,9 @@ BAR_MUTED="#7f8792"
 BAR_ACCENT="#8fb7ff"
 BAR_ALERT="#c75b65"
 BAR_FONT="fixed"
+BAR_HEIGHT=24
+BAR_MARGIN_X=6
+BAR_OFFSET_Y=0
 BAR_WS_ACTIVE="$BAR_ALERT"
 BAR_WS_INACTIVE="$BAR_MUTED"
 BAR_WS_COUNT=5
@@ -54,6 +57,8 @@ La barra se genera desde `scripts/bar.sh`. Para extenderla:
 El indicador central de workspaces muestra números por defecto (`1 2 3 4 5`) para no depender de fuentes con símbolos especiales. Puedes ajustar `BAR_WS_ACTIVE`, `BAR_WS_INACTIVE`, `BAR_WS_COUNT` y `BAR_WS_STYLE`. Si defines `BAR_WS_STYLE="dots"`, usa `BAR_WS_SYMBOL` y `BAR_WS_SEPARATOR`.
 
 La fuente por defecto de `lemonbar` es `fixed` por compatibilidad con instalaciones limpias. Puedes cambiar `BAR_FONT` si tienes otra fuente compatible disponible.
+
+La geometría de `lemonbar` se controla con `BAR_HEIGHT`, `BAR_MARGIN_X` y `BAR_OFFSET_Y`. El margen horizontal por defecto es `6`, de modo que la barra no toca los bordes y encaja mejor con los gaps de i3.
 
 El icono de sesión de la derecha usa `kdc-power-menu`. Puedes ajustar `BAR_POWER_ICON` y `BAR_POWER_COLOR` desde el theme.
 

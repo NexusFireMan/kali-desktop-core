@@ -79,6 +79,7 @@ bindsym $mod+Shift+5 move container to workspace $ws5
 for_window [class=".*"] border pixel 2
 gaps inner 6
 gaps outer 4
+# gaps top debe ser ligeramente mayor que BAR_HEIGHT para dejar espacio a lemonbar.
 gaps top 28
 
 client.focused          #2f3440 #2f3440 #d0d0d0 #8fb7ff #2f3440

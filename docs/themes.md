@@ -40,6 +40,9 @@ Tema más austero y profundo, con acentos cálidos apagados para mantener la int
 El indicador central de workspaces usa estas claves opcionales en `theme.conf`:
 
 ```bash
+BAR_HEIGHT=24
+BAR_MARGIN_X=6
+BAR_OFFSET_Y=0
 BAR_WS_ACTIVE="$BAR_ALERT"
 BAR_WS_INACTIVE="$BAR_MUTED"
 BAR_WS_COUNT=5
@@ -51,6 +54,8 @@ BAR_WS_SEPARATOR=" "
 Si no se definen, `scripts/bar.sh` aplica valores por defecto basados en la paleta del theme. Por defecto se muestran números (`1 2 3 4 5`) para mantener visibilidad en una Kali limpia; `BAR_WS_STYLE="dots"` permite volver al modo de símbolos.
 
 La fuente de barra incluida en los themes es `fixed`, una fuente X11 básica que `lemonbar` carga de forma fiable. Las Nerd Fonts pueden usarse como personalización opcional, pero no son necesarias para que workspaces y `PWR` sean visibles.
+
+`BAR_HEIGHT`, `BAR_MARGIN_X` y `BAR_OFFSET_Y` ajustan la geometría de `lemonbar`. Con los valores incluidos, la barra mide 24 px de alto y deja 6 px de margen a izquierda y derecha. Mantén `gaps top` en i3 ligeramente por encima de `BAR_HEIGHT` para reservar el espacio vertical.
 
 ## Seguridad
 
