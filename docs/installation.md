@@ -10,6 +10,10 @@ cd kali-desktop-core
 chmod +x install.sh uninstall.sh scripts/*.sh
 ```
 
+## Release recomendada
+
+Para una primera instalación estable, usa la release `v0.1.0` o la rama `main` si quieres los últimos cambios.
+
 ## Instalación completa
 
 ```bash

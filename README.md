@@ -1,5 +1,7 @@
 # Kali Desktop Core
 
+![ShellCheck](https://github.com/NexusFireMan/kali-desktop-core/actions/workflows/shellcheck.yml/badge.svg)
+
 Entorno de escritorio minimalista para Kali Linux orientado a pentesting real, máquinas virtuales y sesiones largas de trabajo sin fatiga visual.
 
 <p align="center">
@@ -7,6 +9,8 @@ Entorno de escritorio minimalista para Kali Linux orientado a pentesting real, m
 </p>
 
 Entorno i3 minimalista con barra superior para LAN, VPN, Docker, TARGET y flujo de escaneo integrado con gomap.
+
+[Changelog](CHANGELOG.md) · [Release notes](RELEASE_NOTES.md)
 
 ## Filosofía
 
@@ -38,7 +42,9 @@ Principios del proyecto:
 │   └── workflows/
 │       └── shellcheck.yml
 ├── README.md
+├── CHANGELOG.md
 ├── LICENSE
+├── RELEASE_NOTES.md
 ├── install.sh
 ├── uninstall.sh
 ├── config/
@@ -52,6 +58,7 @@ Principios del proyecto:
 │   ├── installation.md
 │   ├── flujo_trabajo.md
 │   ├── personalizacion.md
+│   ├── release-checklist.md
 │   └── themes.md
 ├── scripts/
 │   ├── bar.sh
@@ -194,6 +201,10 @@ La barra escribe errores de arranque en `~/.cache/kdc-bar.log`. Usa la fuente X1
 bash -n install.sh uninstall.sh scripts/*.sh
 shellcheck install.sh uninstall.sh scripts/*.sh
 ```
+
+## Release
+
+Versión inicial recomendada: `v0.1.0 - First usable release`.
 
 ## Uso básico
 
