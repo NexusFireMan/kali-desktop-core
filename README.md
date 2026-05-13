@@ -8,9 +8,34 @@ Entorno de escritorio minimalista para Kali Linux orientado a pentesting real, m
   <img src="docs/screenshots/04-desktop-overview.png" alt="Kali Desktop Core - desktop overview">
 </p>
 
-Entorno i3 minimalista con barra superior para LAN, VPN, Docker, TARGET y flujo de escaneo integrado con gomap.
+Entorno i3 minimalista con barra superior para LAN, VPN, Docker, TARGET y flujo de escaneo integrado con [gomap](https://github.com/NexusFireMan/gomap).
 
 [Changelog](CHANGELOG.md) · [Release notes](RELEASE_NOTES.md)
+
+## ¿Para quién es?
+
+Kali Desktop Core está pensado como entorno principal de trabajo diario para seguridad ofensiva: pentesting, CTF, HTB/TryHackMe, bug bounty y laboratorios en VM.
+
+No es un simple instalador de herramientas. El objetivo es ofrecer un workspace ligero y coherente para trabajar muchas horas con i3, lemonbar, kitty, zsh, starship, TARGET persistente y una barra centrada en señales útiles durante una sesión real.
+
+Es especialmente útil si buscas:
+
+- un entorno minimalista basado en i3/lemonbar en lugar de un escritorio completo
+- bajo consumo en máquinas virtuales y equipos modestos
+- menos distracciones y más foco durante reconocimiento, explotación y documentación
+- integración práctica con flujos de TARGET, VPN, Docker y [gomap](https://github.com/NexusFireMan/gomap)
+- una base personalizable sin convertir el escritorio en una colección pesada de extras
+
+## Relationship with Kali-Parrot-Setup
+
+[Kali-Parrot-Setup](https://github.com/NexusFireMan/Kali-Parrot-Setup) queda como bootstrap general y legacy para preparar entornos más amplios o multi-desktop: XFCE, Plasma, MATE y GNOME.
+
+Kali Desktop Core es la línea moderna y enfocada: un entorno minimalista i3/lemonbar/kitty/zsh/starship para uso diario, sesiones largas y flujo real de pentesting. Prioriza rendimiento, foco, bajo consumo y una experiencia consistente antes que cubrir todos los escritorios posibles.
+
+En la práctica:
+
+- usa Kali-Parrot-Setup si quieres un bootstrap general para varios escritorios
+- usa Kali Desktop Core si quieres el workspace ofensivo principal, minimalista y mantenido alrededor del flujo NexusFireMan
 
 ## Filosofía
 
