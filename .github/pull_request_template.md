@@ -1,5 +1,6 @@
-## Resumen
+# Pull request
 
+## Resumen
 
 ## Checklist
 
@@ -10,4 +11,3 @@
 - [ ] He actualizado documentación si cambia el flujo.
 - [ ] He añadido capturas si cambia la UI.
 - [ ] Respeta la filosofía del proyecto: rendimiento, foco, bajo consumo y cero bloat.
-

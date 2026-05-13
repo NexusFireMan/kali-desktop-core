@@ -12,7 +12,7 @@ Entorno i3 minimalista con barra superior para LAN, VPN, Docker, TARGET y flujo 
 
 [Changelog](CHANGELOG.md) · [Release notes](RELEASE_NOTES.md)
 
-## ¿Para quién es?
+## Para quién es
 
 Kali Desktop Core está pensado como entorno principal de trabajo diario para seguridad ofensiva: pentesting, CTF, HTB/TryHackMe, bug bounty y laboratorios en VM.
 
@@ -230,6 +230,12 @@ shellcheck install.sh uninstall.sh scripts/*.sh
 ## Release
 
 Versión inicial recomendada: `v0.1.0 - First usable release`.
+
+## Mantenimiento del proyecto
+
+- [Contribuir](CONTRIBUTING.md)
+- [Seguridad](SECURITY.md)
+- [Roadmap](ROADMAP.md)
 
 ## Uso básico
 

@@ -6,19 +6,16 @@ labels: enhancement
 assignees: ""
 ---
 
-## Problema que resuelve
+# Feature request
 
+## Problema que resuelve
 
 ## Propuesta
 
-
 ## Alternativa considerada
 
-
 ## Impacto en rendimiento/bloat
-
 
 ## Relación con la filosofía del proyecto
 
 Explica cómo encaja con rendimiento, foco, bajo consumo y cero bloat.
-

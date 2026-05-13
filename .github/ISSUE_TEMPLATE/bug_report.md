@@ -6,6 +6,8 @@ labels: bug
 assignees: ""
 ---
 
+# Bug report
+
 ## Entorno
 
 - Kali version:
@@ -22,9 +24,7 @@ assignees: ""
 
 ## Resultado esperado
 
-
 ## Resultado obtenido
-
 
 ## Salida de diagnóstico
 
@@ -41,5 +41,3 @@ assignees: ""
 ```
 
 ## Capturas opcionales
-
-

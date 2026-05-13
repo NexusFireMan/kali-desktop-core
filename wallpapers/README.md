@@ -1,3 +1,5 @@
+# Wallpapers
+
 Directorio para wallpapers opcionales compartidos del proyecto.
 
 Los wallpapers principales de cada tema viven dentro de `themes/<nombre>/` y se declaran con la clave `WALLPAPER` en `theme.conf`.

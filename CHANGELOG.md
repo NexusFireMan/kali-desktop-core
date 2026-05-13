@@ -10,15 +10,15 @@
 - Menú de sesión/power con `dmenu`.
 - TARGET persistente compartido entre shell, scripts y barra.
 - Instalador con:
-  - plan previo
-  - `--dry-run`
-  - modo interactivo
-  - perfiles `minimal`, `vm`, `htb`, `bugbounty`, `custom`
-  - backups automáticos
+   - plan previo
+   - `--dry-run`
+   - modo interactivo
+   - perfiles `minimal`, `vm`, `htb`, `bugbounty`, `custom`
+   - backups automáticos
 - Extras opcionales:
-  - `gomap`
-  - Docker
-  - Starship
+   - `gomap`
+   - Docker
+   - Starship
 - Diagnóstico con `kdc-doctor`.
 - Refresco manual de barra con `kdc-refresh`, `refreshbar` y alias `rb`.
 - Temas `default`, `kali-zen` y `katana`.
