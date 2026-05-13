@@ -233,7 +233,6 @@ Versión inicial recomendada: `v0.1.0 - First usable release`.
 
 ## Mantenimiento del proyecto
 
-- [Contribuir](CONTRIBUTING.md)
 - [Seguridad](SECURITY.md)
 - [Roadmap](ROADMAP.md)
 
@@ -333,6 +332,8 @@ Documentación adicional:
 ## Contribuir
 
 Las contribuciones son bienvenidas si respetan la filosofía del proyecto:
+
+Para detalles completos sobre ramas, commits, validaciones y PRs, consulta [CONTRIBUTING.md](CONTRIBUTING.md).
 
 - evitar bloat
 - priorizar rendimiento
