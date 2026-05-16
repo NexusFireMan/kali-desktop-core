@@ -104,7 +104,7 @@ Principios del proyecto:
 
 ## Características
 
-- Barra ligera en `lemonbar` con IP local, VPN, Docker, TARGET, estado VPN y hora.
+- Barra ligera en `lemonbar` con IP local, VPN, Docker, TARGET, batería opcional, estado VPN y hora.
 - Indicador central de workspaces en `lemonbar`, visible por defecto como `1 2 3 4 5`.
 - Menú de sesión/power desde la barra.
 - TARGET persistente compartido entre shell y barra.
