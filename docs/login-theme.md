@@ -1,6 +1,6 @@
 # Login theme
 
-El display manager es el servicio que muestra la pantalla de login antes de iniciar la sesión gráfica. Kali Desktop Core puede aplicar de forma opcional el wallpaper del theme activo y una configuración oscura básica al greeter de LightDM.
+El display manager es el servicio que muestra la pantalla de login antes de iniciar la sesión gráfica. Kali Desktop Core puede aplicar de forma opcional un fondo propio del proyecto y una configuración oscura básica al greeter de LightDM.
 
 Por ahora solo se soporta LightDM. Si el sistema usa `gdm3`, `sddm`, `lxdm` o no se puede detectar el display manager, el instalador muestra un aviso y no modifica nada.
 
@@ -43,12 +43,24 @@ El soporte inicial trabaja sobre:
 /etc/lightdm/lightdm-gtk-greeter.conf
 ```
 
-Si existe un wallpaper válido en `~/.config/kali-desktop-core/current-wallpaper`, se usa ese. Si no existe, se intenta usar el wallpaper del theme seleccionado.
+Por defecto se usa el asset:
+
+```text
+wallpapers/kdc-login-gradient.svg
+```
+
+El instalador lo copia a una ruta del sistema legible por LightDM:
+
+```text
+/usr/share/backgrounds/kali-desktop-core/kdc-login-gradient.svg
+```
+
+Esto evita problemas de permisos con rutas dentro del `HOME` del usuario. Si el asset no existe, se intenta usar `~/.config/kali-desktop-core/current-wallpaper`; si tampoco existe, se intenta usar el wallpaper del theme seleccionado.
 
 En la sección `[greeter]` se configuran:
 
 ```ini
-background=<wallpaper>
+background=/usr/share/backgrounds/kali-desktop-core/kdc-login-gradient.svg
 theme-name=Adwaita-dark
 icon-theme-name=Adwaita
 font-name=Sans 10
@@ -56,6 +68,17 @@ hide-user-image=true
 ```
 
 Si no hay wallpaper válido, no se modifica `background`.
+
+## Cambiar el fondo manualmente
+
+Puedes sustituir el SVG instalado por otro fondo legible por LightDM:
+
+```bash
+sudo install -d -m 0755 /usr/share/backgrounds/kali-desktop-core
+sudo install -m 0644 mi-fondo.svg /usr/share/backgrounds/kali-desktop-core/kdc-login-gradient.svg
+```
+
+También puedes editar `/etc/lightdm/lightdm-gtk-greeter.conf` y cambiar la clave `background=` por otra ruta del sistema.
 
 ## Revertir
 
