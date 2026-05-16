@@ -284,6 +284,36 @@ check_network() {
   fi
 }
 
+check_battery() {
+  local battery capacity status
+
+  for battery in /sys/class/power_supply/BAT*; do
+    [[ -d "$battery" ]] || continue
+
+    if [[ ! -r "$battery/capacity" ]]; then
+      warn "Batería detectada sin capacity legible: $(basename "$battery")"
+      return
+    fi
+
+    capacity=""
+    IFS= read -r capacity < "$battery/capacity" || true
+    if [[ ! "$capacity" =~ ^[0-9]+$ ]]; then
+      warn "Batería detectada con capacidad no numérica: $(basename "$battery")"
+      return
+    fi
+
+    status="Unknown"
+    if [[ -r "$battery/status" ]]; then
+      IFS= read -r status < "$battery/status" || true
+    fi
+
+    ok "Batería detectada ($(basename "$battery")): ${capacity}% ${status}"
+    return
+  done
+
+  ok "No se detectó batería; normal en VM/sobremesa"
+}
+
 check_bar() {
   local log_file="${HOME}/.cache/kdc-bar.log"
   local pid_file="${HOME}/.cache/kdc-bar.pid"
@@ -418,6 +448,10 @@ main() {
 
   printf '\nRed\n'
   check_network
+
+  printf '\nBatería\n'
+  printf '%s\n' '-------'
+  check_battery
 
   printf '\nDocker\n'
   check_docker

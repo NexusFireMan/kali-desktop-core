@@ -44,6 +44,9 @@ BAR_WS_SYMBOL="•"
 BAR_WS_SEPARATOR=" "
 BAR_POWER_ICON="PWR"
 BAR_POWER_COLOR="$BAR_ALERT"
+BAR_BAT_LOW_THRESHOLD=20
+BAR_BAT_LABEL="BAT"
+BAR_BAT_CHARGING_SUFFIX="+"
 ```
 
 ## Ajustar la barra
@@ -73,6 +76,8 @@ La fuente por defecto de `lemonbar` es `fixed` por compatibilidad con instalacio
 La geometría de `lemonbar` se controla con `BAR_HEIGHT`, `BAR_MARGIN_X` y `BAR_OFFSET_Y`. El margen horizontal por defecto es `6`, de modo que la barra no toca los bordes y encaja mejor con los gaps de i3.
 
 El icono de sesión de la derecha usa `kdc-power-menu`. Puedes ajustar `BAR_POWER_ICON` y `BAR_POWER_COLOR` desde el theme.
+
+El segmento de batería aparece solo si existe `/sys/class/power_supply/BAT*`. Puedes ajustar `BAR_BAT_LOW_THRESHOLD`, `BAR_BAT_LABEL` y `BAR_BAT_CHARGING_SUFFIX` desde el theme.
 
 ## Shell y productividad
 

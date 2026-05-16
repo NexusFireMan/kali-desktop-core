@@ -66,6 +66,13 @@ load_theme_defaults() {
   BAR_WS_STYLE="${BAR_WS_STYLE:-numbers}"
   BAR_POWER_ICON="${BAR_POWER_ICON:-PWR}"
   BAR_POWER_COLOR="${BAR_POWER_COLOR:-$BAR_ALERT}"
+  BAR_BAT_LOW_THRESHOLD="${BAR_BAT_LOW_THRESHOLD:-20}"
+  BAR_BAT_LABEL="${BAR_BAT_LABEL:-BAT}"
+  BAR_BAT_CHARGING_SUFFIX="${BAR_BAT_CHARGING_SUFFIX:-+}"
+
+  if [[ ! "$BAR_BAT_LOW_THRESHOLD" =~ ^[0-9]+$ || "$BAR_BAT_LOW_THRESHOLD" -lt 1 || "$BAR_BAT_LOW_THRESHOLD" -gt 100 ]]; then
+    BAR_BAT_LOW_THRESHOLD=20
+  fi
 }
 
 segment() {
@@ -195,26 +202,74 @@ handle_bar_action() {
   esac
 }
 
+battery_segment() {
+  local battery capacity_file status_file capacity status suffix="" color
+
+  for battery in /sys/class/power_supply/BAT*; do
+    [[ -d "$battery" ]] || continue
+
+    capacity_file="$battery/capacity"
+    status_file="$battery/status"
+    [[ -r "$capacity_file" ]] || continue
+
+    capacity=""
+    IFS= read -r capacity < "$capacity_file" || true
+    [[ "$capacity" =~ ^[0-9]+$ ]] || continue
+
+    status="Unknown"
+    if [[ -r "$status_file" ]]; then
+      IFS= read -r status < "$status_file" || true
+    fi
+
+    case "$status" in
+      Charging)
+        suffix="$BAR_BAT_CHARGING_SUFFIX"
+        color="$BAR_ACCENT"
+        ;;
+      Full)
+        suffix=""
+        color="$BAR_FG"
+        ;;
+      *)
+        suffix=""
+        if [[ "$capacity" -le "$BAR_BAT_LOW_THRESHOLD" ]]; then
+          color="$BAR_ALERT"
+        else
+          color="$BAR_FG"
+        fi
+        ;;
+    esac
+
+    bar_debug_log "batería detectada=$(basename "$battery"), capacidad=${capacity}, estado=${status}"
+    segment "$BAR_BAT_LABEL" "${capacity}%${suffix}" "$color"
+    return 0
+  done
+
+  return 0
+}
+
 render_line() {
-  local local_ip vpn_ip docker_ip target vpn_state clock workspaces power
+  local local_ip vpn_ip docker_ip target vpn_state battery clock workspaces power
 
   local_ip="$("$NETWORK_SCRIPT" local 2>/dev/null || true)"
   vpn_ip="$("$NETWORK_SCRIPT" vpn 2>/dev/null || true)"
   docker_ip="$("$NETWORK_SCRIPT" docker 2>/dev/null || true)"
   vpn_state="$("$NETWORK_SCRIPT" vpn-state 2>/dev/null || true)"
+  battery="$(battery_segment)"
   target="$(read_target)"
   clock="$(date '+%H:%M')"
   workspaces="$(workspace_dots)"
   [[ -z "$workspaces" ]] && workspaces="  1  2  3  4  5  "
   power="   $(power_button)"
 
-  printf "%%{l}%s%s%s%s%%{c}%s%%{r}%s%s%s\n" \
+  printf "%%{l}%s%s%s%s%%{c}%s%%{r}%s%s%s%s\n" \
     "$(segment 'LAN' "${local_ip:-down}")" \
     "$(segment 'TUN' "${vpn_ip:-off}" "$BAR_ACCENT")" \
     "$(segment 'DOCKER' "${docker_ip:-off}" "$BAR_MUTED")" \
     "$(segment 'TARGET' "${target:-none}" "$BAR_ACCENT")" \
     "$workspaces" \
     "$(segment 'VPN' "$vpn_state" "$([[ "$vpn_state" == "VPN:up" ]] && printf '%s' "$BAR_ACCENT" || printf '%s' "$BAR_ALERT")")" \
+    "$battery" \
     "$(segment 'TIME' "$clock")" \
     "$power"
 }

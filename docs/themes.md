@@ -57,6 +57,18 @@ La fuente de barra incluida en los themes es `fixed`, una fuente X11 básica que
 
 `BAR_HEIGHT`, `BAR_MARGIN_X` y `BAR_OFFSET_Y` ajustan la geometría de `lemonbar`. Con los valores incluidos, la barra mide 24 px de alto y deja 6 px de margen a izquierda y derecha. Mantén `gaps top` en i3 ligeramente por encima de `BAR_HEIGHT` para reservar el espacio vertical.
 
+## Batería en la barra
+
+El segmento de batería solo aparece cuando existe una batería real en `/sys/class/power_supply/BAT*`. Estas claves permiten ajustar el texto:
+
+```bash
+BAR_BAT_LOW_THRESHOLD=20
+BAR_BAT_LABEL="BAT"
+BAR_BAT_CHARGING_SUFFIX="+"
+```
+
+Si la batería está por debajo del umbral se usa `BAR_ALERT`; si está cargando se usa `BAR_ACCENT`.
+
 ## Seguridad
 
 Los themes son archivos de configuración en formato Bash que son leídos por los scripts del proyecto. Revisa themes de terceros antes de instalarlos.
