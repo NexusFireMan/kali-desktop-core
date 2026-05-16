@@ -57,6 +57,10 @@ La fuente de barra incluida en los themes es `fixed`, una fuente X11 básica que
 
 `BAR_HEIGHT`, `BAR_MARGIN_X` y `BAR_OFFSET_Y` ajustan la geometría de `lemonbar`. Con los valores incluidos, la barra mide 24 px de alto y deja 6 px de margen a izquierda y derecha. Mantén `gaps top` en i3 ligeramente por encima de `BAR_HEIGHT` para reservar el espacio vertical.
 
+## Login theme
+
+El login theme usa un fondo minimalista propio del proyecto y se gestiona por separado del wallpaper del escritorio.
+
 ## Batería en la barra
 
 El segmento de batería solo aparece cuando existe una batería real en `/sys/class/power_supply/BAT*`. Estas claves permiten ajustar el texto:

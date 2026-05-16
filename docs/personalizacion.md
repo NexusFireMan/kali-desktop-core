@@ -79,6 +79,8 @@ El icono de sesión de la derecha usa `kdc-power-menu`. Puedes ajustar `BAR_POWE
 
 El segmento de batería aparece solo si existe `/sys/class/power_supply/BAT*`. Puedes ajustar `BAR_BAT_LOW_THRESHOLD`, `BAR_BAT_LABEL` y `BAR_BAT_CHARGING_SUFFIX` desde el theme.
 
+El login theme usa un fondo minimalista propio del proyecto y se gestiona por separado del wallpaper del escritorio.
+
 ## Shell y productividad
 
 La lógica de `TARGET` y funciones de uso diario está en:

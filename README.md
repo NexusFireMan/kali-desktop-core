@@ -195,6 +195,15 @@ kdc-doctor --strict
 
 El doctor comprueba comandos, configuración, scripts instalados, red, barra, tema y PATH. Consulta la guía completa en [installation.md](docs/installation.md).
 
+### Login theme LightDM
+
+```bash
+./install.sh --dry-run --login-theme
+./install.sh --login-theme
+```
+
+El login theme es opcional y solo se aplica si lo solicitas explícitamente. Actualmente soporta LightDM y usa un fondo minimalista oscuro con degradado suave. Consulta [Login theme](docs/login-theme.md).
+
 ## Actualización
 
 Para actualizar una instalación existente:
@@ -231,7 +240,7 @@ shellcheck install.sh uninstall.sh scripts/*.sh
 
 ## Release
 
-Versión inicial recomendada: `v0.1.0 - First usable release`.
+Versión actual recomendada: `v0.2.0 - LightDM login theme`.
 
 ## Mantenimiento del proyecto
 
@@ -331,6 +340,10 @@ Documentación adicional:
 ### Installation dry-run
 
 ![Installation dry-run](docs/screenshots/01-dry-run-plan.png)
+
+### Login theme
+
+![Login theme](docs/screenshots/05-login-theme.png)
 
 ## Contribuir
 

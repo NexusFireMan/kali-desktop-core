@@ -12,7 +12,7 @@ chmod +x install.sh uninstall.sh scripts/*.sh
 
 ## Release recomendada
 
-Para una primera instalación estable, usa la release `v0.1.0` o la rama `main` si quieres los últimos cambios.
+Para una instalación estable, usa la release `v0.2.0` o la rama `main` si quieres los últimos cambios.
 
 ## Instalación completa
 
@@ -136,6 +136,15 @@ El instalador deja disponible:
 ```
 
 La barra muestra `PWR` en la zona derecha. Al hacer click izquierdo abre un menú con `dmenu` para bloquear sesión, cerrar sesión, suspender, reiniciar o apagar. Las acciones de reinicio y apagado piden confirmación antes de ejecutarse.
+
+## Login theme LightDM
+
+```bash
+./install.sh --dry-run --login-theme
+./install.sh --login-theme
+```
+
+Esta opción es opt-in y solo modifica LightDM si está disponible. Para más detalles consulta [Login theme](login-theme.md).
 
 ## Starship
 

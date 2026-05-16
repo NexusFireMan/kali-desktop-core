@@ -15,3 +15,4 @@ docs/screenshots/*.png
 !docs/screenshots/03-kdc-doctor.png
 !docs/screenshots/04-desktop-overview.png
 !docs/screenshots/04-target-overview.png
+!docs/screenshots/05-login-theme.png
