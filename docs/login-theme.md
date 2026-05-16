@@ -4,6 +4,10 @@ El display manager es el servicio que muestra la pantalla de login antes de inic
 
 Por ahora solo se soporta LightDM. Si el sistema usa `gdm3`, `sddm`, `lxdm` o no se puede detectar el display manager, el instalador muestra un aviso y no modifica nada.
 
+## Vista previa
+
+![Login theme](screenshots/05-login-theme.png)
+
 ## Comprobar LightDM
 
 ```bash

@@ -25,7 +25,18 @@
 
 ## GitHub release
 
-- [ ] Crear tag `v0.1.0`.
+- [ ] Crear tag `v0.2.0`.
 - [ ] Usar contenido de `RELEASE_NOTES.md`.
 - [ ] Marcar como latest release.
 - [ ] Adjuntar capturas si procede.
+
+## Login theme checks
+
+- [ ] Confirmar display manager con `cat /etc/X11/default-display-manager`.
+- [ ] Confirmar LightDM con `systemctl status lightdm --no-pager`.
+- [ ] Ejecutar `./install.sh --dry-run --login-theme`.
+- [ ] Confirmar que el plan muestra LightDM compatible.
+- [ ] Aplicar `./install.sh --login-theme` en VM/snapshot.
+- [ ] Confirmar backup de `/etc/lightdm/lightdm-gtk-greeter.conf`.
+- [ ] Confirmar fondo en login.
+- [ ] Confirmar que se puede revertir desde backup.

@@ -1,10 +1,23 @@
 # Changelog
 
-## [Unreleased]
+## [v0.2.0] - 2026-05-16
 
 ### Added
 
 - Soporte opcional inicial para tema de login LightDM.
+- Fondo de login minimalista basado en degradado oscuro.
+- Opción `--login-theme` para aplicar el tema de login de forma explícita.
+- Opción `--without-login-theme` para mantenerlo desactivado.
+- Detección del display manager activo.
+- Documentación dedicada en `docs/login-theme.md`.
+- Captura real del login theme en `docs/screenshots/05-login-theme.png`.
+
+### Notes
+
+- El login theme es opt-in y no se aplica por defecto.
+- El soporte inicial está limitado a LightDM.
+- El fondo se copia a una ruta del sistema para evitar problemas de permisos con el usuario `lightdm`.
+- Reiniciar LightDM cerrará la sesión gráfica actual.
 
 ## [v0.1.0] - 2026-05-12
 

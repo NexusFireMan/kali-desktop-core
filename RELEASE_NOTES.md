@@ -1,58 +1,72 @@
-# v0.1.0 - First usable release
+# v0.2.0 - LightDM login theme
 
 ## Overview
 
-`kali-desktop-core` is a minimal Kali Linux desktop workflow focused on real pentesting sessions, virtual machines and long-running lab work.
+`v0.2.0` adds an optional LightDM login theme to Kali Desktop Core.
 
-This first usable release provides a complete i3-based environment with a lightweight lemonbar status bar, persistent TARGET workflow, optional pentesting helpers and an installer designed to be reviewed before touching the system.
+This release focuses on visual consistency outside the i3 session, keeping the same minimal, dark and distraction-free philosophy from the desktop environment.
 
 ## Highlights
 
-- Minimal i3 desktop for Kali Linux.
-- Lightweight lemonbar with LAN, VPN/TUN, Docker, TARGET, workspace indicator, time and PWR menu.
-- Persistent TARGET workflow integrated with shell and bar.
-- `gomap` integration for fast scanning workflows.
-- Interactive installer with dry-run planning.
-- Profiles for minimal, VM, HTB, bug bounty and custom setups.
-- Optional Docker, Starship and gomap installation.
-- `kdc-doctor` diagnostic tool.
-- Real screenshots and installation documentation.
-- ShellCheck workflow.
+- Optional LightDM login theme.
+- Dark minimal login background with subtle gray gradient.
+- New `--login-theme` installer flag.
+- New `--without-login-theme` flag.
+- Display manager detection.
+- Safe dry-run support before touching `/etc/lightdm`.
+- Automatic backup of LightDM greeter configuration.
+- Dedicated login theme documentation.
+- Real login theme screenshot.
 
-## Quick install
+## Login theme preview
 
-```bash
-git clone https://github.com/NexusFireMan/kali-desktop-core.git
-cd kali-desktop-core
-chmod +x install.sh uninstall.sh scripts/*.sh
-./install.sh --interactive
-```
+![Login theme](docs/screenshots/05-login-theme.png)
 
-## Recommended HTB/VM install
+## Usage
+
+Dry-run first:
 
 ```bash
-./install.sh --dry-run --full --profile htb --theme kali-zen
-./install.sh --full --profile htb --theme kali-zen --with-gomap --with-docker --run-doctor
+./install.sh --dry-run --login-theme
 ```
+
+Apply login theme:
+
+```bash
+./install.sh --login-theme
+```
+
+Apply with a full installation:
+
+```bash
+./install.sh --full --theme kali-zen --login-theme
+```
+
+## Supported Display Manager
+
+Currently supported:
+
+- LightDM
+
+Not yet supported:
+
+- GDM
+- SDDM
+- LXDM
+
+## Safety Notes
+
+- This feature is opt-in.
+- It modifies `/etc/lightdm/lightdm-gtk-greeter.conf`.
+- A timestamped backup is created before changes.
+- Restarting LightDM will close the current graphical session.
+- Test in a VM or snapshot first.
 
 ## Validation
 
 ```bash
 bash -n install.sh uninstall.sh scripts/*.sh
 shellcheck install.sh uninstall.sh scripts/*.sh
+./install.sh --dry-run --login-theme
+./install.sh --dry-run --full --theme kali-zen --login-theme
 ```
-
-## Tested on
-
-- Kali Linux virtualized.
-- X11 session.
-- i3.
-- Theme: `kali-zen`.
-- Profile: `htb`.
-
-## Known notes
-
-- The default lemonbar font is `fixed` for compatibility.
-- Nerd Font icons are optional and not required.
-- If a VPN is started manually, run `rb` to force a bar refresh.
-- Docker group membership requires logging out and back in.
