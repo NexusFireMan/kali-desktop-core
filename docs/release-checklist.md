@@ -14,6 +14,10 @@
 - [ ] Probar `Mod+Shift+e`.
 - [ ] Probar cambio de workspaces.
 - [ ] Probar cambio de theme.
+- [ ] Probar `--login-theme` solo en VM/snapshot.
+- [ ] Confirmar LightDM con `/etc/X11/default-display-manager`.
+- [ ] Confirmar que se crea backup del greeter.
+- [ ] Confirmar que se puede revertir el backup del greeter.
 - [ ] Revisar capturas.
 - [ ] Ejecutar validación Bash/ShellCheck.
 

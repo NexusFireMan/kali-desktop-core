@@ -82,6 +82,7 @@ Principios del proyecto:
 │   ├── screenshots/
 │   ├── installation.md
 │   ├── flujo_trabajo.md
+│   ├── login-theme.md
 │   ├── personalizacion.md
 │   ├── release-checklist.md
 │   └── themes.md
@@ -107,6 +108,7 @@ Principios del proyecto:
 - Barra ligera en `lemonbar` con IP local, VPN, Docker, TARGET, batería opcional, estado VPN y hora.
 - Indicador central de workspaces en `lemonbar`, visible por defecto como `1 2 3 4 5`.
 - Menú de sesión/power desde la barra.
+- Soporte opcional inicial para tema de login en LightDM.
 - TARGET persistente compartido entre shell y barra.
 - Alias y funciones útiles para flujos de pentesting.
 - Temas intercambiables sin rehacer toda la configuración.
@@ -312,6 +314,7 @@ Documentación adicional:
 
 - [Personalización](docs/personalizacion.md)
 - [Instalación](docs/installation.md)
+- [Login theme](docs/login-theme.md)
 - [Temas](docs/themes.md)
 - [Flujo de trabajo](docs/flujo_trabajo.md)
 

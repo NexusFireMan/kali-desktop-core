@@ -25,12 +25,14 @@ RUN_DOCTOR=0
 WITH_GOMAP="auto"
 WITH_STARSHIP="auto"
 WITH_DOCKER="auto"
+WITH_LOGIN_THEME="auto"
 NO_ARGS=0
 
 HAS_APT=0
 OS_ID="unknown"
 OS_LIKE=""
 SESSION_TYPE="unknown"
+DISPLAY_MANAGER="unknown"
 LOCAL_BIN_IN_PATH=0
 RUNNING_AS_ROOT=0
 
@@ -150,6 +152,8 @@ Nuevas opciones:
   --without-starship             No instala starship externo
   --with-docker                  Instala docker.io y docker-compose
   --without-docker               No instala Docker
+  --login-theme                  Aplica tema de login si LightDM está disponible
+  --without-login-theme          No aplica tema de login
   --run-doctor                   Ejecuta kdc-doctor al final si existe
   --no-confirm                   No pide confirmación del plan
   --profile <perfil>             minimal, vm, htb, bugbounty o custom
@@ -159,6 +163,7 @@ Ejemplos:
   ./install.sh --full --theme kali-zen
   ./install.sh --full --theme kali-zen --with-gomap --with-starship
   ./install.sh --full --profile htb --with-docker
+  ./install.sh --dry-run --login-theme
   ./install.sh --configs --dry-run
   ./install.sh --theme katana --dry-run
   ./install.sh --interactive
@@ -215,6 +220,33 @@ detect_system() {
     OS_ID="${ID:-unknown}"
     OS_LIKE="${ID_LIKE:-}"
   fi
+}
+
+detect_display_manager() {
+  local dm_file="/etc/X11/default-display-manager"
+  local dm_path dm_name
+
+  if [[ -r "$dm_file" ]]; then
+    dm_path="$(tr -d '[:space:]' < "$dm_file")"
+    dm_name="$(basename "$dm_path")"
+    case "$dm_name" in
+      lightdm|gdm3|sddm|lxdm)
+        printf '%s\n' "$dm_name"
+        return 0
+        ;;
+    esac
+  fi
+
+  if is_command systemctl; then
+    for dm_name in lightdm gdm3 sddm lxdm; do
+      if systemctl is-active --quiet "$dm_name" 2>/dev/null; then
+        printf '%s\n' "$dm_name"
+        return 0
+      fi
+    done
+  fi
+
+  printf 'unknown\n'
 }
 
 select_profile_interactive() {
@@ -300,6 +332,12 @@ select_extras_interactive() {
     WITH_STARSHIP="no"
   fi
 
+  if confirm "¿Aplicar tema de pantalla de login si LightDM está disponible?" "n"; then
+    WITH_LOGIN_THEME="yes"
+  else
+    WITH_LOGIN_THEME="no"
+  fi
+
   if confirm "¿Ejecutar kdc-doctor al final si existe?" "n"; then
     RUN_DOCTOR=1
   fi
@@ -333,11 +371,16 @@ resolve_defaults() {
       *) WITH_DOCKER="no" ;;
     esac
   fi
+
+  if [[ "$WITH_LOGIN_THEME" == "auto" ]]; then
+    WITH_LOGIN_THEME="no"
+  fi
 }
 
 build_plan() {
   local src dest
 
+  DISPLAY_MANAGER="$(detect_display_manager)"
   PACKAGES=()
   CONFIG_TARGETS=()
   BACKUP_TARGETS=()
@@ -411,6 +454,15 @@ build_plan() {
     SUDO_ACTIONS+=("systemctl enable --now docker if available")
     SUDO_ACTIONS+=("usermod -aG docker current user")
   fi
+
+  if [[ "$WITH_LOGIN_THEME" == "yes" ]]; then
+    CONFIG_TARGETS+=("/etc/lightdm/lightdm-gtk-greeter.conf")
+    BACKUP_TARGETS+=("/etc/lightdm/lightdm-gtk-greeter.conf.kdc-backup-$(date +%Y%m%d-%H%M%S)")
+    if [[ "$DISPLAY_MANAGER" == "lightdm" ]]; then
+      SUDO_ACTIONS+=("backup /etc/lightdm/lightdm-gtk-greeter.conf")
+      SUDO_ACTIONS+=("update LightDM GTK greeter theme")
+    fi
+  fi
 }
 
 print_list() {
@@ -442,6 +494,7 @@ print_plan() {
   printf '  - apt-get: %s\n' "$([[ $HAS_APT -eq 1 ]] && printf 'sí' || printf 'no')"
   printf '  - OS: %s %s\n' "$OS_ID" "$OS_LIKE"
   printf '  - Sesión: %s\n' "$SESSION_TYPE"
+  printf '  - Display manager: %s\n' "$DISPLAY_MANAGER"
   printf '  - ~/.local/bin en PATH: %s\n' "$([[ $LOCAL_BIN_IN_PATH -eq 1 ]] && printf 'sí' || printf 'no')"
   printf '  - Ejecutando como root: %s\n' "$([[ $RUNNING_AS_ROOT -eq 1 ]] && printf 'sí' || printf 'no')"
   printf '\n'
@@ -467,6 +520,11 @@ print_plan() {
   printf '  - gomap: %s\n' "$WITH_GOMAP"
   printf '  - starship externo: %s\n' "$WITH_STARSHIP"
   printf '  - docker: %s\n' "$WITH_DOCKER"
+  printf '  - login theme: %s\n' "$WITH_LOGIN_THEME"
+  if [[ "$WITH_LOGIN_THEME" == "yes" ]]; then
+    printf '  - login theme compatible: %s\n' "$([[ "$DISPLAY_MANAGER" == "lightdm" ]] && printf 'yes' || printf 'no')"
+    printf '  - login theme file: /etc/lightdm/lightdm-gtk-greeter.conf\n'
+  fi
   printf '  - doctor: %s\n' "$([[ $RUN_DOCTOR -eq 1 ]] && printf 'sí' || printf 'no')"
   printf '\n'
 
@@ -671,6 +729,160 @@ apply_theme() {
   fi
 }
 
+get_login_wallpaper() {
+  local current_file="${HOME}/.config/kali-desktop-core/current-wallpaper"
+  local wallpaper_path wallpaper_file theme_dir="$THEMES_DIR/$THEME_NAME"
+
+  if [[ -s "$current_file" ]]; then
+    wallpaper_path="$(head -n1 "$current_file")"
+    if [[ -f "$wallpaper_path" ]]; then
+      printf '%s\n' "$wallpaper_path"
+      return 0
+    fi
+  fi
+
+  wallpaper_file="$(awk -F'"' '/^WALLPAPER=/{print $2}' "$theme_dir/theme.conf" 2>/dev/null | head -n1)"
+  if [[ -n "${wallpaper_file:-}" && -f "$theme_dir/$wallpaper_file" ]]; then
+    printf '%s\n' "$theme_dir/$wallpaper_file"
+    return 0
+  fi
+
+  return 0
+}
+
+set_ini_key() {
+  local file="$1"
+  local section="$2"
+  local key="$3"
+  local value="$4"
+  local tmp
+
+  tmp="$(mktemp)"
+  awk -v section="$section" -v key="$key" -v value="$value" '
+    function trim(text) {
+      sub(/^[[:space:]]+/, "", text)
+      sub(/[[:space:]]+$/, "", text)
+      return text
+    }
+    function emit_key() {
+      print key "=" value
+      key_done = 1
+    }
+    BEGIN {
+      in_section = 0
+      section_found = 0
+      key_done = 0
+    }
+    /^[[:space:]]*\[[^]]+\][[:space:]]*$/ {
+      if (in_section && !key_done) {
+        emit_key()
+      }
+      header = $0
+      sub(/^[[:space:]]*\[/, "", header)
+      sub(/\][[:space:]]*$/, "", header)
+      header = trim(header)
+      in_section = (header == section)
+      if (in_section) {
+        section_found = 1
+      }
+      print
+      next
+    }
+    {
+      if (in_section && index($0, "=") > 0) {
+        split($0, parts, "=")
+        candidate = trim(parts[1])
+        if (candidate == key) {
+          if (!key_done) {
+            emit_key()
+          }
+          next
+        }
+      }
+      print
+    }
+    END {
+      if (in_section && !key_done) {
+        emit_key()
+      } else if (!section_found) {
+        print ""
+        print "[" section "]"
+        print key "=" value
+      }
+    }
+  ' "$file" > "$tmp"
+  mv "$tmp" "$file"
+}
+
+apply_lightdm_login_theme() {
+  local greeter_file="/etc/lightdm/lightdm-gtk-greeter.conf"
+  local backup_file
+  local wallpaper tmp_file
+
+  backup_file="/etc/lightdm/lightdm-gtk-greeter.conf.kdc-backup-$(date +%Y%m%d-%H%M%S)"
+
+  if [[ ! -e "$greeter_file" ]]; then
+    warn "No existe $greeter_file. No se aplica tema de login."
+    return 0
+  fi
+
+  wallpaper="$(get_login_wallpaper)"
+
+  if [[ $DRY_RUN -eq 1 ]]; then
+    printf '[dry-run] Display manager detectado: lightdm\n'
+    printf '[dry-run] modificar: %s\n' "$greeter_file"
+    printf '[dry-run] crear backup: %s\n' "$backup_file"
+    if [[ -n "${wallpaper:-}" ]]; then
+      printf '[dry-run] set [greeter] background=%s\n' "$wallpaper"
+    else
+      printf '[dry-run] sin wallpaper válido; no se establecería background\n'
+    fi
+    printf '[dry-run] set [greeter] theme-name=Adwaita-dark\n'
+    printf '[dry-run] set [greeter] icon-theme-name=Adwaita\n'
+    printf '[dry-run] set [greeter] font-name=Sans 10\n'
+    printf '[dry-run] set [greeter] hide-user-image=true\n'
+    return 0
+  fi
+
+  log "Creando backup de LightDM GTK greeter: $backup_file"
+  dry_run_or_exec sudo cp -a "$greeter_file" "$backup_file"
+
+  tmp_file="$(mktemp)"
+  sudo cat "$greeter_file" | tee "$tmp_file" >/dev/null
+
+  if [[ -n "${wallpaper:-}" ]]; then
+    set_ini_key "$tmp_file" "greeter" "background" "$wallpaper"
+  else
+    warn "No se encontró wallpaper válido; se mantiene el background actual del greeter."
+  fi
+  set_ini_key "$tmp_file" "greeter" "theme-name" "Adwaita-dark"
+  set_ini_key "$tmp_file" "greeter" "icon-theme-name" "Adwaita"
+  set_ini_key "$tmp_file" "greeter" "font-name" "Sans 10"
+  set_ini_key "$tmp_file" "greeter" "hide-user-image" "true"
+
+  log "Aplicando tema de login LightDM"
+  dry_run_or_exec sudo install -m 0644 "$tmp_file" "$greeter_file"
+  rm -f "$tmp_file"
+}
+
+apply_login_theme() {
+  local dm
+
+  if [[ "$WITH_LOGIN_THEME" != "yes" ]]; then
+    return
+  fi
+
+  dm="$(detect_display_manager)"
+  DISPLAY_MANAGER="$dm"
+
+  if [[ "$dm" != "lightdm" ]]; then
+    warn "Display manager detectado: $dm. El tema de login solo soporta LightDM por ahora; no se modifica nada."
+    return 0
+  fi
+
+  apply_lightdm_login_theme
+}
+
 run_doctor() {
   if [[ $RUN_DOCTOR -eq 0 ]]; then
     return
@@ -740,6 +952,14 @@ parse_args() {
         WITH_DOCKER="no"
         shift
         ;;
+      --login-theme)
+        WITH_LOGIN_THEME="yes"
+        shift
+        ;;
+      --without-login-theme)
+        WITH_LOGIN_THEME="no"
+        shift
+        ;;
       --run-doctor)
         RUN_DOCTOR=1
         shift
@@ -795,11 +1015,12 @@ execute_plan() {
       install_docker
     fi
 
-    if [[ $INSTALL_CONFIGS -eq 0 && $INSTALL_THEME -eq 0 && "$WITH_GOMAP" != "yes" && "$WITH_STARSHIP" != "yes" && "$WITH_DOCKER" != "yes" && $RUN_DOCTOR -eq 0 ]]; then
+    if [[ $INSTALL_CONFIGS -eq 0 && $INSTALL_THEME -eq 0 && "$WITH_GOMAP" != "yes" && "$WITH_STARSHIP" != "yes" && "$WITH_DOCKER" != "yes" && "$WITH_LOGIN_THEME" != "yes" && $RUN_DOCTOR -eq 0 ]]; then
       die "No se seleccionó ninguna acción. Usa --help para ver opciones."
     fi
   fi
 
+  apply_login_theme
   run_doctor
 }
 

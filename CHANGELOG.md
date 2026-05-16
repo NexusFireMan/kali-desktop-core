@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Soporte opcional inicial para tema de login LightDM.
+
 ## [v0.1.0] - 2026-05-12
 
 ### Added
