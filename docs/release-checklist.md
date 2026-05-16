@@ -16,6 +16,8 @@
 - [ ] Probar cambio de theme.
 - [ ] Probar `--login-theme` solo en VM/snapshot.
 - [ ] Confirmar LightDM con `/etc/X11/default-display-manager`.
+- [ ] Confirmar que el fondo existe en `/usr/share/backgrounds/kali-desktop-core/`.
+- [ ] Confirmar que LightDM muestra el fondo tras reiniciar.
 - [ ] Confirmar que se crea backup del greeter.
 - [ ] Confirmar que se puede revertir el backup del greeter.
 - [ ] Revisar capturas.

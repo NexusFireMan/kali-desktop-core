@@ -12,6 +12,9 @@ GOMAP_KEYRING_URL="https://nexusfireman.github.io/gomap/gomap-archive-keyring.gp
 GOMAP_KEYRING_PATH="/usr/share/keyrings/gomap-archive-keyring.gpg"
 GOMAP_REPO_LINE="deb [signed-by=/usr/share/keyrings/gomap-archive-keyring.gpg] https://nexusfireman.github.io/gomap stable main"
 GOMAP_REPO_FILE="/etc/apt/sources.list.d/gomap.list"
+LOGIN_BACKGROUND_SRC="$WALLPAPERS_SRC/kdc-login-gradient.svg"
+LOGIN_BACKGROUND_DIR="/usr/share/backgrounds/kali-desktop-core"
+LOGIN_BACKGROUND_DEST="$LOGIN_BACKGROUND_DIR/kdc-login-gradient.svg"
 
 THEME_NAME="default"
 PROFILE_NAME="vm"
@@ -457,8 +460,14 @@ build_plan() {
 
   if [[ "$WITH_LOGIN_THEME" == "yes" ]]; then
     CONFIG_TARGETS+=("/etc/lightdm/lightdm-gtk-greeter.conf")
+    if [[ -f "$LOGIN_BACKGROUND_SRC" ]]; then
+      CONFIG_TARGETS+=("$LOGIN_BACKGROUND_SRC -> $LOGIN_BACKGROUND_DEST")
+    fi
     BACKUP_TARGETS+=("/etc/lightdm/lightdm-gtk-greeter.conf.kdc-backup-$(date +%Y%m%d-%H%M%S)")
     if [[ "$DISPLAY_MANAGER" == "lightdm" ]]; then
+      if [[ -f "$LOGIN_BACKGROUND_SRC" ]]; then
+        SUDO_ACTIONS+=("install $LOGIN_BACKGROUND_DEST")
+      fi
       SUDO_ACTIONS+=("backup /etc/lightdm/lightdm-gtk-greeter.conf")
       SUDO_ACTIONS+=("update LightDM GTK greeter theme")
     fi
@@ -733,6 +742,11 @@ get_login_wallpaper() {
   local current_file="${HOME}/.config/kali-desktop-core/current-wallpaper"
   local wallpaper_path wallpaper_file theme_dir="$THEMES_DIR/$THEME_NAME"
 
+  if [[ -f "$LOGIN_BACKGROUND_SRC" ]]; then
+    printf '%s\n' "$LOGIN_BACKGROUND_DEST"
+    return 0
+  fi
+
   if [[ -s "$current_file" ]]; then
     wallpaper_path="$(head -n1 "$current_file")"
     if [[ -f "$wallpaper_path" ]]; then
@@ -818,8 +832,10 @@ apply_lightdm_login_theme() {
   local greeter_file="/etc/lightdm/lightdm-gtk-greeter.conf"
   local backup_file
   local wallpaper tmp_file
+  local login_asset_available=0
 
   backup_file="/etc/lightdm/lightdm-gtk-greeter.conf.kdc-backup-$(date +%Y%m%d-%H%M%S)"
+  [[ -f "$LOGIN_BACKGROUND_SRC" ]] && login_asset_available=1
 
   if [[ ! -e "$greeter_file" ]]; then
     warn "No existe $greeter_file. No se aplica tema de login."
@@ -832,6 +848,12 @@ apply_lightdm_login_theme() {
     printf '[dry-run] Display manager detectado: lightdm\n'
     printf '[dry-run] modificar: %s\n' "$greeter_file"
     printf '[dry-run] crear backup: %s\n' "$backup_file"
+    if [[ $login_asset_available -eq 1 ]]; then
+      printf '[dry-run] crear directorio: %s mode 0755\n' "$LOGIN_BACKGROUND_DIR"
+      printf '[dry-run] copiar fondo login: %s -> %s mode 0644\n' "$LOGIN_BACKGROUND_SRC" "$LOGIN_BACKGROUND_DEST"
+    else
+      printf '[dry-run] asset login no encontrado: %s; se usará fallback si existe\n' "$LOGIN_BACKGROUND_SRC"
+    fi
     if [[ -n "${wallpaper:-}" ]]; then
       printf '[dry-run] set [greeter] background=%s\n' "$wallpaper"
     else
@@ -846,6 +868,12 @@ apply_lightdm_login_theme() {
 
   log "Creando backup de LightDM GTK greeter: $backup_file"
   dry_run_or_exec sudo cp -a "$greeter_file" "$backup_file"
+
+  if [[ $login_asset_available -eq 1 ]]; then
+    log "Instalando fondo de login: $LOGIN_BACKGROUND_DEST"
+    dry_run_or_exec sudo install -d -m 0755 "$LOGIN_BACKGROUND_DIR"
+    dry_run_or_exec sudo install -m 0644 "$LOGIN_BACKGROUND_SRC" "$LOGIN_BACKGROUND_DEST"
+  fi
 
   tmp_file="$(mktemp)"
   sudo cat "$greeter_file" | tee "$tmp_file" >/dev/null
